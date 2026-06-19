@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="GymPair"/>
-<meta name="theme-color" content="#090d16"/>
+<meta name="theme-color" content="#f8f9fc"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --accent: #f97316;
-  --accent-glow: rgba(249, 115, 22, 0.15);
+  --accent-glow: rgba(249, 115, 22, 0.18);
 }
 *{
   box-sizing:border-box;
@@ -25,11 +25,11 @@
 html,body,#root{
   height:100%;
   width:100%;
-  background:#090d16;
+  background:#f0f2f7;
 }
 body{
   font-family:'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color:#f8fafc;
+  color:#1a2030;
   overflow:hidden;
   user-select: none;
   -webkit-user-select: none;
@@ -135,9 +135,9 @@ input:focus,button:focus{
 
 /* Custom styled inputs */
 .workout-input {
-  background: #151f32;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #f8fafc;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #1a2030;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
 }
 .workout-input:focus {
@@ -145,9 +145,9 @@ input:focus,button:focus{
   box-shadow: 0 0 8px var(--accent-glow);
 }
 .workout-input-done {
-  background: rgba(255,255,255,0.02) !important;
-  color: #64748b !important;
-  border-color: rgba(255,255,255,0.03) !important;
+  background: rgba(0,0,0,0.03) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(0,0,0,0.05) !important;
 }
 </style>
 </head>
@@ -298,11 +298,11 @@ const db={
 };
 
 const C={
-  bg1:'#090d16',bg2:'#151f32',bg3:'#1f2d47',
-  txt1:'#f8fafc',txt2:'#94a3b8',txt3:'#64748b',
-  bdr:'rgba(255,255,255,0.08)',bdr2:'rgba(255,255,255,0.15)',
-  green:'#10b981',greenBg:'rgba(16,185,129,0.12)',
-  redBg:'rgba(239,68,68,0.12)',red:'#ef4444',
+  bg1:'#f0f2f7',bg2:'#ffffff',bg3:'#eef0f6',
+  txt1:'#1a2030',txt2:'#4a5568',txt3:'#94a3b8',
+  bdr:'rgba(0,0,0,0.08)',bdr2:'rgba(0,0,0,0.14)',
+  green:'#059669',greenBg:'rgba(5,150,105,0.1)',
+  redBg:'rgba(239,68,68,0.08)',red:'#dc2626',
 };
 const r={sm:'8px',md:'12px',lg:'16px',xl:'20px'};
 
@@ -328,7 +328,7 @@ const Icons={
 };
 
 const Wrap=({children,cx})=>html`
-  <div class="slide-up" style=${{fontFamily:'\'Outfit\',-apple-system,BlinkMacSystemFont,sans-serif',height:'100dvh',display:'flex',flexDirection:'column',overflow:'hidden',background:C.bg1,color:C.txt1,maxWidth:500,margin:'0 auto',boxShadow:'0 0 40px rgba(0,0,0,0.8)',borderLeft:`1px solid ${C.bdr}`,borderRight:`1px solid ${C.bdr}`,position:'relative',...cx}}>
+  <div class="slide-up" style=${{fontFamily:'\'Outfit\',-apple-system,BlinkMacSystemFont,sans-serif',height:'100dvh',display:'flex',flexDirection:'column',overflow:'hidden',background:C.bg1,color:C.txt1,maxWidth:500,margin:'0 auto',boxShadow:'0 0 40px rgba(0,0,0,0.12)',borderLeft:`1px solid ${C.bdr}`,borderRight:`1px solid ${C.bdr}`,position:'relative',...cx}}>
     ${children}
   </div>`;
 
@@ -359,29 +359,29 @@ const Btn=({children,onClick,cx,variant='primary'})=>{
 
 function ProfileSelect({onSel}){
   return html`
-    <${Wrap} cx=${{alignItems:'center',justifyContent:'center',padding:28,background:'linear-gradient(135deg, #090d16 0%, #0d1527 100%)',position:'relative'}}>
+    <${Wrap} cx=${{alignItems:'center',justifyContent:'center',padding:28,background:'linear-gradient(135deg, #f0f2f7 0%, #e8ecf5 100%)',position:'relative'}}>
       <!-- Background subtle glows -->
-      <div style=${{position:'absolute',width:150,height:150,background:'#3b82f6',filter:'blur(80px)',opacity:0.12,top:'20%',left:'10%',pointerEvents:'none'}}/>
-      <div style=${{position:'absolute',width:150,height:150,background:'#db2777',filter:'blur(80px)',opacity:0.12,bottom:'25%',right:'10%',pointerEvents:'none'}}/>
+      <div style=${{position:'absolute',width:150,height:150,background:'#3b82f6',filter:'blur(80px)',opacity:0.08,top:'20%',left:'10%',pointerEvents:'none'}}/>
+      <div style=${{position:'absolute',width:150,height:150,background:'#db2777',filter:'blur(80px)',opacity:0.08,bottom:'25%',right:'10%',pointerEvents:'none'}}/>
       
       <div class="scale-in" style=${{textAlign:'center',width:'100%',zIndex:1}}>
-        <div style=${{fontSize:52,marginBottom:15,animation:'pulseGlow 2.5s infinite ease-in-out',display:'inline-block',background:'rgba(255,255,255,0.05)',width:90,height:90,lineHeight:'90px',borderRadius:'50%'}}>🏋️</div>
-        <h1 style=${{margin:'0 0 8px',fontSize:36,fontWeight:800,letterSpacing:'-0.03em',background:'linear-gradient(90deg, #f8fafc, #94a3b8)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>GymPair</h1>
+        <div style=${{fontSize:52,marginBottom:15,animation:'pulseGlow 2.5s infinite ease-in-out',display:'inline-block',background:'rgba(0,0,0,0.05)',width:90,height:90,lineHeight:'90px',borderRadius:'50%'}}>🏋️</div>
+        <h1 style=${{margin:'0 0 8px',fontSize:36,fontWeight:800,letterSpacing:'-0.03em',background:'linear-gradient(90deg, #1a2030, #4a5568)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>GymPair</h1>
         <p style=${{margin:'0 0 48px',color:C.txt2,fontSize:16,fontWeight:400}}>Chọn hồ sơ để bắt đầu</p>
         <div style=${{display:'flex',gap:24,justifyContent:'center',width:'100%',maxWidth:340,margin:'0 auto'}}>
           ${PR.map(p=>html`
             <button key=${p.id} onClick=${()=>onSel(p.id)} class="btn-action card-hover" style=${{
               flex:1,padding:'24px 16px 20px',borderRadius:r.xl,
-              border:`1px solid rgba(255,255,255,0.08)`,background:'rgba(21, 31, 50, 0.7)',
+              border:`1px solid rgba(0,0,0,0.08)`,background:'rgba(255,255,255,0.85)',
               backdropFilter:'blur(10px)',
               cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:16,
-              boxShadow:`0 8px 32px rgba(0,0,0,0.4)`
+              boxShadow:`0 8px 32px rgba(0,0,0,0.1)`
             }}>
               <div style=${{position:'relative'}}>
                 <img src=${p.img} style=${{width:84,height:84,borderRadius:'50%',border:`2px solid ${p.c}`,boxShadow:`0 0 15px ${p.c}40`,objectFit:'cover',display:'block'}} />
-                <span style=${{position:'absolute',bottom:-4,right:-4,fontSize:20,background:C.bg2,borderRadius:'50%',width:30,height:30,lineHeight:'30px',textAlign:'center',boxShadow:`0 2px 8px rgba(0,0,0,0.5)`,border:`1px solid rgba(255,255,255,0.1)`}}>${p.e}</span>
+                <span style=${{position:'absolute',bottom:-4,right:-4,fontSize:20,background:C.bg2,borderRadius:'50%',width:30,height:30,lineHeight:'30px',textAlign:'center',boxShadow:`0 2px 8px rgba(0,0,0,0.15)`,border:`1px solid rgba(0,0,0,0.08)`}}>${p.e}</span>
               </div>
-              <span style=${{fontSize:18,fontWeight:700,color:'#f8fafc',letterSpacing:'-0.01em'}}>${p.name}</span>
+              <span style=${{fontSize:18,fontWeight:700,color:C.txt1,letterSpacing:'-0.01em'}}>${p.name}</span>
             </button>`)}
         </div>
       </div>
@@ -390,7 +390,7 @@ function ProfileSelect({onSel}){
 
 function TabBar({tab,onTab}){
   return html`
-    <nav style=${{display:'flex',borderTop:`1px solid ${C.bdr}`,background:C.bg2,flexShrink:0,paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 16px rgba(0,0,0,0.2)'}}>
+    <nav style=${{display:'flex',borderTop:`1px solid ${C.bdr}`,background:C.bg2,flexShrink:0,paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 16px rgba(0,0,0,0.06)'}}>
       ${[{id:'home',l:'Trang chủ',i:Icons.home},{id:'progs',l:'Chương trình',i:Icons.progs},{id:'hist',l:'Lịch sử',i:Icons.hist}].map(t=>html`
         <button key=${t.id} onClick=${()=>onTab(t.id)} class="btn-action" style=${{
           flex:1,padding:'12px 0 10px',border:'none',background:'transparent',cursor:'pointer',
@@ -420,12 +420,12 @@ function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
       <!-- Hero Motivational Banner -->
       <div style=${{position:'relative',borderRadius:r.lg,overflow:'hidden',marginBottom:24,height:160,boxShadow:'0 8px 24px rgba(0,0,0,0.5)',border:'1px solid rgba(255,255,255,0.06)'}}>
         <img src="./workout_hero.png" style=${{width:'100%',height:'100%',objectFit:'cover',filter:'brightness(0.5)'}} />
-        <div style=${{position:'absolute',bottom:0,left:0,right:0,padding:'16px 20px',background:'linear-gradient(0deg, rgba(9,13,22,0.9) 0%, rgba(9,13,22,0) 100%)',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+        <div style=${{position:'absolute',bottom:0,left:0,right:0,padding:'16px 20px',background:'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
           <div>
             <p style=${{margin:0,color:ACC,fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.05em'}}>Xin chào,</p>
             <h2 style=${{margin:0,fontSize:22,fontWeight:800,letterSpacing:'-0.02em'}}>${profile.name} ${profile.e}</h2>
           </div>
-          <button onClick=${onSwitch} class="btn-action" style=${{background:'rgba(255,255,255,0.1)',backdropFilter:'blur(5px)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:r.md,padding:'6px 12px',color:'#fff',fontSize:12,fontWeight:600,cursor:'pointer'}}>Đổi hồ sơ</button>
+          <button onClick=${onSwitch} class="btn-action" style=${{background:'rgba(0,0,0,0.15)',backdropFilter:'blur(5px)',border:'1px solid rgba(0,0,0,0.2)',borderRadius:r.md,padding:'6px 12px',color:'#fff',fontSize:12,fontWeight:600,cursor:'pointer'}}>Đổi hồ sơ</button>
         </div>
       </div>
 
@@ -499,7 +499,7 @@ function ProgsTab({progs,onNew,onDel,onStart}){
           <${Card} key=${prog.id} cx=${{border:`1px solid ${C.bdr}`}}>
             <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
               <p style=${{margin:0,fontSize:16,fontWeight:700,letterSpacing:'-0.01em'}}>${prog.name}</p>
-              <button onClick=${()=>{if(window.confirm(`Xoá "${prog.name}"?`))onDel(prog.id);}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.trash} size=${14}/></button>
+              <button onClick=${()=>{if(window.confirm(`Xoá "${prog.name}"?`))onDel(prog.id);}} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.trash} size=${14}/></button>
             </div>
             <div style=${{display:'flex',gap:8,flexWrap:'wrap'}}>
               ${prog.days.map((d,i)=>html`
@@ -595,11 +595,11 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
 
   return html`
     <${Wrap}>
-      <div style=${{background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',borderBottom:`1px solid ${C.bdr}`,padding:'14px 16px 12px',flexShrink:0}}>
+      <div style=${{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(10px)',borderBottom:`1px solid ${C.bdr}`,padding:'14px 16px 12px',flexShrink:0}}>
         <div style=${{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:12}}>
           <div>
             <p style=${{margin:0,fontSize:11,color:C.txt3,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.05em'}}>${workout.progName}</p>
-            <h2 style=${{margin:0,fontSize:20,fontWeight:800,color:'#fff',letterSpacing:'-0.02em'}}>${workout.dayName}</h2>
+            <h2 style=${{margin:0,fontSize:20,fontWeight:800,color:C.txt1,letterSpacing:'-0.02em'}}>${workout.dayName}</h2>
           </div>
           <div style=${{textAlign:'right'}}>
             <p style=${{margin:0,fontSize:24,fontWeight:800,color:ACC,fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em'}}>${fT(elapsed)}</p>
@@ -618,7 +618,7 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
               }}>${restLabel(t)}</button>`)}
           </div>
           <div style=${{display:'flex',gap:8}}>
-            <button onClick=${()=>{if(window.confirm('Huỷ buổi tập?'))onDiscard();}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:r.md,padding:'8px 14px',color:C.txt2,fontSize:12,fontWeight:600,cursor:'pointer'}}>Huỷ</button>
+            <button onClick=${()=>{if(window.confirm('Huỷ buổi tập?'))onDiscard();}} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:r.md,padding:'8px 14px',color:C.txt2,fontSize:12,fontWeight:600,cursor:'pointer'}}>Huỷ</button>
             <button onClick=${()=>{if(window.confirm('Kết thúc và lưu buổi tập?'))onFinish();}} class="btn-action" style=${{background:C.green,border:'none',borderRadius:r.md,padding:'8px 16px',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer',boxShadow:`0 4px 12px rgba(16,185,129,0.25)`}}>✓ Xong</button>
           </div>
         </div>
@@ -628,34 +628,34 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
       ${rest!==null&&html`
         <div class="slide-up ${rest.secs === 0 ? 'pulse-red-glow' : ''}" style=${{
           position:'fixed', bottom: 20, left: 16, right: 16,
-          background:'rgba(21, 31, 50, 0.95)', backdropFilter:'blur(12px)',
-          border:`1px solid ${rest.secs === 0 ? C.red : 'rgba(255,255,255,0.1)'}`,
+          background:'rgba(255,255,255,0.97)', backdropFilter:'blur(12px)',
+          border:`1px solid ${rest.secs === 0 ? C.red : 'rgba(0,0,0,0.1)'}`,
           borderRadius:r.lg, padding:'12px 16px', display:'flex', alignItems:'center', gap:14,
-          boxShadow:'0 12px 36px rgba(0,0,0,0.5)', zIndex: 1000
+          boxShadow:'0 12px 36px rgba(0,0,0,0.12)', zIndex: 1000
         }}>
           <div style=${{position:'relative', width:54, height:54, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
             <svg width="54" height="54" viewBox="0 0 60 60" style=${{transform:'rotate(-90deg)'}}>
-              <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+              <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="4" />
               <circle cx="30" cy="30" r="26" fill="none" stroke=${rest.secs===0?C.green:ACC} stroke-width="4" 
                       stroke-dasharray="163.3" 
                       stroke-dashoffset=${163.3 - (163.3 * rest.secs) / rest.max}
                       stroke-linecap="round"
                       style=${{transition:'stroke-dashoffset 1s linear'}} />
             </svg>
-            <span style=${{position:'absolute', fontSize:14, fontWeight:800, color:'#fff', fontVariantNumeric:'tabular-nums'}}>
+            <span style=${{position:'absolute', fontSize:14, fontWeight:800, color:C.txt1, fontVariantNumeric:'tabular-nums'}}>
               ${rest.secs}s
             </span>
           </div>
           <div style=${{flex:1}}>
             <p style=${{margin:0, fontSize:10, color:C.txt3, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em'}}>Thời gian nghỉ</p>
-            <p style=${{margin:0, fontSize:13, fontWeight:700, color:rest.secs===0?C.green:'#fff'}}>
+            <p style=${{margin:0, fontSize:13, fontWeight:700, color:rest.secs===0?C.green:C.txt1}}>
               ${rest.secs===0?'Hết giờ! Tiếp tục tập thôi 🔥':`Tiếp tục sau ${fT(rest.secs)}`}
             </p>
           </div>
           <div style=${{display:'flex', gap:6, alignItems:'center'}}>
             ${rest.secs > 0 && html`
-              <button onClick=${()=>addRestSecs(-15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>−15s</button>
-              <button onClick=${()=>addRestSecs(15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>+15s</button>
+              <button onClick=${()=>addRestSecs(-15)} class="btn-action" style=${{background:C.bg3, border:`1px solid ${C.bdr}`, borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:C.txt1, cursor:'pointer'}}>−15s</button>
+              <button onClick=${()=>addRestSecs(15)} class="btn-action" style=${{background:C.bg3, border:`1px solid ${C.bdr}`, borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:C.txt1, cursor:'pointer'}}>+15s</button>
             `}
             <button onClick=${()=>setRest(null)} class="btn-action" style=${{background:'none', border:'none', color:C.txt3, cursor:'pointer', fontSize:22, padding:4, marginLeft:4}}>×</button>
           </div>
@@ -745,8 +745,8 @@ function CreateProg({exList,onSave,onClose}){
 
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
-        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(255,255,255,0.9)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
           <${Icons.close} size=${20}/>
         </button>
         <h2 style=${{margin:0,fontSize:18,fontWeight:800,flex:1,letterSpacing:'-0.01em'}}>Tạo chương trình</h2>
@@ -766,10 +766,10 @@ function CreateProg({exList,onSave,onClose}){
                 value=${day.name} onInput=${e=>setDN(di,e.target.value)}
                 style=${{flex:1,padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,background:C.bg1,color:C.txt1}}
               />
-              ${days.length>1&&html`<button onClick=${()=>delDay(di)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.close} size=${16}/></button>`}
+              ${days.length>1&&html`<button onClick=${()=>delDay(di)} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:'50%',width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.close} size=${16}/></button>`}
             </div>
             ${day.exs.map((pe,ei)=>html`
-              <div key=${ei} style=${{display:'flex',alignItems:'center',gap:8,background:C.bg3,borderRadius:r.md,padding:'10px 12px',marginBottom:8,border:`1px solid rgba(255,255,255,0.03)`}}>
+              <div key=${ei} style=${{display:'flex',alignItems:'center',gap:8,background:C.bg3,borderRadius:r.md,padding:'10px 12px',marginBottom:8,border:`1px solid ${C.bdr}`}}>
                 <span style=${{flex:1,fontSize:13,fontWeight:600,color:C.txt1}}>${pe.name}</span>
                 <input type="number" min="1" max="20" value=${pe.sets}
                   onInput=${e=>setSetsN(di,ei,e.target.value)}
@@ -820,9 +820,9 @@ function PickEx({exList,onPick,onClose,onAddEx}){
   };
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px 12px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',flexShrink:0}}>
+      <div style=${{padding:'14px 16px 12px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(255,255,255,0.9)',backdropFilter:'blur(10px)',flexShrink:0}}>
         <div style=${{display:'flex',gap:12,alignItems:'center',marginBottom:12}}>
-          <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+          <button onClick=${onClose} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
             <${Icons.close} size=${20}/>
           </button>
           <h3 style=${{margin:0,fontSize:18,fontWeight:800,letterSpacing:'-0.01em'}}>Chọn bài tập</h3>
@@ -866,8 +866,8 @@ function SessDetail({session,onClose}){
   const totalSets=session.exs?.reduce((t,e)=>t+e.sets.filter(s=>s.done).length,0)||0;
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,flexShrink:0,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center'}}>
-        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,flexShrink:0,background:'rgba(255,255,255,0.9)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center'}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:C.bg3,border:`1px solid ${C.bdr}`,borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
           <${Icons.close} size=${20}/>
         </button>
         <div style=${{flex:1}}>
@@ -896,15 +896,15 @@ function SessDetail({session,onClose}){
             <p style=${{margin:'0 0 12px',fontSize:14,fontWeight:800,color:ACC,letterSpacing:'-0.01em'}}>${ex.name}</p>
             <div style=${{display:'flex',flexDirection:'column',gap:8}}>
               ${ex.sets.filter(s=>s.done).map((set,j)=>html`
-                <div key=${j} style=${{display:'flex',gap:14,padding:'10px 14px',background:C.bg3,borderRadius:r.md,fontSize:13,alignItems:'center',color:C.txt1,border:`1px solid rgba(255,255,255,0.03)`}}>
+                <div key=${j} style=${{display:'flex',gap:14,padding:'10px 14px',background:C.bg3,borderRadius:r.md,fontSize:13,alignItems:'center',color:C.txt1,border:`1px solid ${C.bdr}`}}>
                   <span style=${{color:C.txt3,fontSize:11,fontWeight:700,width:16}}>${j+1}</span>
                   <span style=${{flex:1}}><strong>${set.weight||'—'}</strong> kg</span>
                   <span style=${{flex:1}}><strong>${set.reps||'—'}</strong> reps</span>
-                  ${set.rpe&&html`<span style=${{background:'rgba(255,255,255,0.06)',padding:'2px 6px',borderRadius:4,color:C.txt2,fontSize:11,fontWeight:600}}>RPE ${set.rpe}</span>`}
+                  ${set.rpe&&html`<span style=${{background:C.bg1,padding:'2px 6px',borderRadius:4,color:C.txt2,fontSize:11,fontWeight:600,border:`1px solid ${C.bdr}`}}>RPE ${set.rpe}</span>`}
                 </div>`)}
             </div>
             ${ex.notes&&html`
-              <div style=${{marginTop:10,paddingTop:10,borderTop:`1px solid rgba(255,255,255,0.04)`,fontSize:12,color:C.txt2,fontStyle:'italic',display:'flex',gap:6}}>
+              <div style=${{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.bdr}`,fontSize:12,color:C.txt2,fontStyle:'italic',display:'flex',gap:6}}>
                 <span>📝</span>
                 <span>${ex.notes}</span>
               </div>
@@ -939,7 +939,7 @@ function CelebrationModal({onClose, workout, profile}) {
   return html`
     <div class="fade-in" style=${{
       position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-      background: 'rgba(9, 13, 22, 0.96)', zIndex: 10000,
+      background: 'rgba(240, 242, 247, 0.97)', zIndex: 10000,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: 30
     }}>
@@ -947,10 +947,10 @@ function CelebrationModal({onClose, workout, profile}) {
       
       <div class="scale-in" style=${{textAlign: 'center', maxWidth: 360}}>
         <div style=${{fontSize: 64, marginBottom: 20, animation: 'checkmarkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'}}>🏆</div>
-        <h2 style=${{fontSize: 28, fontWeight: 800, margin: '0 0 10px', color: '#fff', letterSpacing:'-0.02em'}}>Tuyệt Vời!</h2>
+        <h2 style=${{fontSize: 28, fontWeight: 800, margin: '0 0 10px', color: C.txt1, letterSpacing:'-0.02em'}}>Tuyệt Vời!</h2>
         <p style=${{fontSize: 16, color: C.txt2, margin: '0 0 32px'}}>Chúc mừng ${profile.name} đã hoàn thành buổi tập 🔥</p>
         
-        <div style=${{background: C.bg2, borderRadius: r.lg, padding: 20, marginBottom: 32, border: `1px solid ${C.bdr}`, boxShadow: '0 10px 30px rgba(0,0,0,0.5)'}}>
+        <div style=${{background: C.bg2, borderRadius: r.lg, padding: 20, marginBottom: 32, border: `1px solid ${C.bdr}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)'}}>
           <p style=${{margin: 0, fontSize: 11, color: C.txt3, textTransform: 'uppercase', fontWeight: 700, letterSpacing:'0.05em'}}>Buổi tập</p>
           <p style=${{margin: '2px 0 16px', fontSize: 18, fontWeight: 800, color: ACC, letterSpacing:'-0.01em'}}>${workout.dayName}</p>
           

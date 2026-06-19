@@ -717,12 +717,13 @@
         <${Label} t="Gần đây" mt=${20}/>
         ${sessions.slice(0, 3).map(s => html`
           <${Card} key=${s.id} onClick=${() => onView(s)} class="card-hover" cx=${{ cursor: 'pointer', border: `1px solid ${C.bdr}` }}>
-            <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
+            <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+              ${s.photoUrl && html`<img src=${s.photoUrl} loading="lazy" style=${{ width: 44, height: 44, borderRadius: r.md, objectFit: 'cover', flexShrink: 0 }}/>`}
+              <div style=${{ flex: 1, minWidth: 0 }}>
                 <p style=${{ margin: '0 0 2px', fontSize: 14, fontWeight: 500, color: '#0f172a' }}>${s.title || s.dayName}</p>
                 <p style=${{ margin: 0, color: C.txt2, fontSize: 12 }}>${s.progName} · <span style=${{ color: C.txt3 }}>${fD(s.date)}</span></p>
               </div>
-              <div style=${{ textAlign: 'right' }}>
+              <div style=${{ textAlign: 'right', flexShrink: 0 }}>
                 <p style=${{ margin: '0 0 2px', fontSize: 14, fontWeight: 600, color: ACC }}>${Math.round(s.totalVol || 0)} kg</p>
                 <p style=${{ margin: 0, color: C.txt3, fontSize: 12 }}>${durS(s.endTime - s.startTime)}</p>
               </div>
@@ -769,13 +770,14 @@
           ? html`<${Empty} icon="📊" msg="Chưa có buổi tập nào" sub="Hoàn thành một buổi để thấy ở đây"/>`
           : sessions.map(s => html`
           <${Card} key=${s.id} onClick=${() => onView(s)} class="card-hover" cx=${{ cursor: 'pointer', border: `1px solid ${C.bdr}` }}>
-            <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
+            <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+              ${s.photoUrl && html`<img src=${s.photoUrl} loading="lazy" style=${{ width: 48, height: 48, borderRadius: r.md, objectFit: 'cover', flexShrink: 0 }}/>`}
+              <div style=${{ flex: 1, minWidth: 0 }}>
                 <p style=${{ margin: '0 0 4px', fontSize: 15, fontWeight: 500, color: '#0f172a', letterSpacing: '-0.01em' }}>${s.title || s.dayName}</p>
                 <p style=${{ margin: '0 0 6px', color: C.txt2, fontSize: 12 }}>${s.progName}</p>
                 <p style=${{ margin: 0, color: C.txt3, fontSize: 11, fontWeight: 400 }}>${fD(s.date)}</p>
               </div>
-              <div style=${{ textAlign: 'right' }}>
+              <div style=${{ textAlign: 'right', flexShrink: 0 }}>
                 <p style=${{ margin: '0 0 4px', fontSize: 15, fontWeight: 600, color: ACC }}>${Math.round(s.totalVol || 0)} kg</p>
                 <p style=${{ margin: '0 0 6px', color: C.txt2, fontSize: 12 }}>${durS(s.endTime - s.startTime)}</p>
                 <p style=${{ margin: 0, color: C.txt3, fontSize: 11, fontWeight: 400 }}>${s.exs?.length || 0} bài</p>
@@ -1649,7 +1651,6 @@
       };
 
       useEffect(() => { loadAllSessions(); }, []);
-      useEffect(() => { if (tab === 'info' && infoSub === 'journal') loadAllSessions(); }, [tab, infoSub]);
       useEffect(() => {
         const unsub = cloud.listenSessions(list => {
           if (!list.length) return;
@@ -1728,7 +1729,6 @@
         db.set(`a:${pid}`, null);
         setActive(null);
         setPg(null);
-        loadAllSessions();
         cloud.pushSession({ ...sess, profileId: pid });
       };
 

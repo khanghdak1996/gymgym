@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>GymPair</title>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="GymPair"/>
+<meta name="theme-color" content="#090d16"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #f97316;
+  --accent-glow: rgba(249, 115, 22, 0.15);
+}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+html,body,#root{
+  height:100%;
+  width:100%;
+  background:#090d16;
+}
+body{
+  font-family:'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color:#f8fafc;
+  overflow:hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+input,button,textarea{
+  font-family:inherit;
+}
+input:focus,button:focus{
+  outline:none;
+}
+::-webkit-scrollbar{
+  display:none;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.scale-in {
+  animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.checkmark-pop {
+  animation: checkmarkPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.pulse-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes checkmarkPop {
+  0% { transform: scale(0.6); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+@keyframes pulseRedGlow {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.pulse-red-glow {
+  animation: pulseRedGlow 1.5s infinite ease-in-out;
+}
+
+/* Confetti effect */
+.confetti-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  opacity: 0.8;
+  animation: confettiFall 2.8s linear forwards;
+}
+
+/* Button & Card Micro-interactions */
+.btn-action {
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, opacity 0.15s, box-shadow 0.2s;
+}
+.btn-action:active {
+  transform: scale(0.95);
+}
+.card-hover {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, border-color 0.2s;
+}
+.card-hover:active {
+  transform: scale(0.975);
+}
+
+/* Custom styled inputs */
+.workout-input {
+  background: #151f32;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
+}
+.workout-input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.workout-input-done {
+  background: rgba(255,255,255,0.02) !important;
+  color: #64748b !important;
+  border-color: rgba(255,255,255,0.03) !important;
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+import{h,render}from'https://esm.sh/preact@10';
+import{useState,useEffect}from'https://esm.sh/preact@10/hooks';
+import htm from'https://esm.sh/htm@3';
+const html=htm.bind(h);
+
+const EX=[
+  // Ngực
+  {id:'bench-press',name:'Bench Press',g:'Ngực'},
+  {id:'incline-bench',name:'Incline Bench Press',g:'Ngực'},
+  {id:'decline-bench',name:'Decline Bench Press',g:'Ngực'},
+  {id:'dumbbell-press',name:'Dumbbell Press',g:'Ngực'},
+  {id:'incline-db-press',name:'Incline Dumbbell Press',g:'Ngực'},
+  {id:'cable-fly',name:'Cable Fly',g:'Ngực'},
+  {id:'low-cable-fly',name:'Low Cable Fly',g:'Ngực'},
+  {id:'dumbbell-fly',name:'Dumbbell Fly',g:'Ngực'},
+  {id:'pec-deck',name:'Pec Deck (Machine Fly)',g:'Ngực'},
+  {id:'chest-dip',name:'Chest Dip',g:'Ngực'},
+  {id:'machine-chest',name:'Machine Chest Press',g:'Ngực'},
+  {id:'push-up',name:'Push-up',g:'Ngực'},
+  // Chân
+  {id:'squat',name:'Squat',g:'Chân'},
+  {id:'leg-press',name:'Leg Press',g:'Chân'},
+  {id:'rdl',name:'Romanian Deadlift',g:'Chân'},
+  {id:'leg-curl',name:'Leg Curl (Lying)',g:'Chân'},
+  {id:'seated-leg-curl',name:'Leg Curl (Seated)',g:'Chân'},
+  {id:'leg-ext',name:'Leg Extension',g:'Chân'},
+  {id:'calf-raise',name:'Calf Raise (Standing)',g:'Chân'},
+  {id:'seated-calf',name:'Calf Raise (Seated)',g:'Chân'},
+  {id:'bulgarian-split',name:'Bulgarian Split Squat',g:'Chân'},
+  {id:'hack-squat',name:'Hack Squat',g:'Chân'},
+  {id:'goblet-squat',name:'Goblet Squat',g:'Chân'},
+  {id:'sumo-squat',name:'Sumo Squat',g:'Chân'},
+  {id:'walking-lunge',name:'Walking Lunge',g:'Chân'},
+  {id:'leg-press-calf',name:'Leg Press Calf Raise',g:'Chân'},
+  {id:'sissy-squat',name:'Sissy Squat',g:'Chân'},
+  // Lưng
+  {id:'deadlift',name:'Deadlift',g:'Lưng'},
+  {id:'barbell-row',name:'Barbell Row',g:'Lưng'},
+  {id:'lat-pull',name:'Lat Pulldown',g:'Lưng'},
+  {id:'pull-up',name:'Pull-up',g:'Lưng'},
+  {id:'chin-up',name:'Chin-up',g:'Lưng'},
+  {id:'seated-row',name:'Seated Cable Row',g:'Lưng'},
+  {id:'t-bar-row',name:'T-Bar Row',g:'Lưng'},
+  {id:'single-arm-row',name:'Single Arm Dumbbell Row',g:'Lưng'},
+  {id:'straight-arm-pull',name:'Straight Arm Pulldown',g:'Lưng'},
+  {id:'chest-supported-row',name:'Chest Supported Row',g:'Lưng'},
+  {id:'rack-pull',name:'Rack Pull',g:'Lưng'},
+  {id:'hyperextension',name:'Hyperextension',g:'Lưng'},
+  {id:'meadows-row',name:'Meadows Row',g:'Lưng'},
+  // Vai
+  {id:'ohp',name:'Overhead Press (Barbell)',g:'Vai'},
+  {id:'db-shoulder-press',name:'Dumbbell Shoulder Press',g:'Vai'},
+  {id:'arnold-press',name:'Arnold Press',g:'Vai'},
+  {id:'lateral-raise',name:'Lateral Raise',g:'Vai'},
+  {id:'cable-lateral-raise',name:'Cable Lateral Raise',g:'Vai'},
+  {id:'face-pull',name:'Face Pull',g:'Vai'},
+  {id:'front-raise',name:'Front Raise',g:'Vai'},
+  {id:'reverse-fly',name:'Reverse Fly (Dumbbell)',g:'Vai'},
+  {id:'upright-row',name:'Upright Row',g:'Vai'},
+  {id:'machine-shoulder',name:'Machine Shoulder Press',g:'Vai'},
+  {id:'rear-delt-fly',name:'Rear Delt Fly (Machine)',g:'Vai'},
+  {id:'cable-face-pull',name:'Cable Face Pull',g:'Vai'},
+  // Tay
+  {id:'bicep-curl',name:'Barbell Curl',g:'Tay'},
+  {id:'db-curl',name:'Dumbbell Curl',g:'Tay'},
+  {id:'hammer-curl',name:'Hammer Curl',g:'Tay'},
+  {id:'preacher-curl',name:'Preacher Curl',g:'Tay'},
+  {id:'concentration-curl',name:'Concentration Curl',g:'Tay'},
+  {id:'incline-db-curl',name:'Incline Dumbbell Curl',g:'Tay'},
+  {id:'cable-curl',name:'Cable Curl',g:'Tay'},
+  {id:'ez-bar-curl',name:'EZ Bar Curl',g:'Tay'},
+  {id:'reverse-curl',name:'Reverse Curl',g:'Tay'},
+  {id:'tricep-push',name:'Tricep Pushdown (Cable)',g:'Tay'},
+  {id:'skull-crusher',name:'Skull Crusher',g:'Tay'},
+  {id:'overhead-tricep',name:'Overhead Tricep Extension',g:'Tay'},
+  {id:'close-grip-bench',name:'Close Grip Bench Press',g:'Tay'},
+  {id:'tricep-kickback',name:'Tricep Kickback',g:'Tay'},
+  {id:'cable-overhead-tricep',name:'Cable Overhead Tricep Ext.',g:'Tay'},
+  // Mông
+  {id:'hip-thrust',name:'Hip Thrust',g:'Mông'},
+  {id:'glute-bridge',name:'Glute Bridge',g:'Mông'},
+  {id:'cable-kickback',name:'Cable Kickback',g:'Mông'},
+  {id:'donkey-kick',name:'Donkey Kick',g:'Mông'},
+  {id:'sumo-deadlift',name:'Sumo Deadlift',g:'Mông'},
+  {id:'step-up',name:'Step-up',g:'Mông'},
+  {id:'abductor',name:'Hip Abductor (Machine)',g:'Mông'},
+  {id:'adductor',name:'Hip Adductor (Machine)',g:'Mông'},
+  // Bụng
+  {id:'plank',name:'Plank (giây)',g:'Bụng'},
+  {id:'side-plank',name:'Side Plank (giây)',g:'Bụng'},
+  {id:'crunch',name:'Crunch',g:'Bụng'},
+  {id:'cable-crunch',name:'Cable Crunch',g:'Bụng'},
+  {id:'hanging-leg-raise',name:'Hanging Leg Raise',g:'Bụng'},
+  {id:'ab-wheel',name:'Ab Wheel Rollout',g:'Bụng'},
+  {id:'russian-twist',name:'Russian Twist',g:'Bụng'},
+  {id:'sit-up',name:'Sit-up',g:'Bụng'},
+  {id:'bicycle-crunch',name:'Bicycle Crunch',g:'Bụng'},
+  {id:'leg-raise',name:'Leg Raise (Lying)',g:'Bụng'},
+  {id:'toe-touch',name:'Toe Touch Crunch',g:'Bụng'},
+];
+
+const PR=[
+  {id:'anh',name:'Anh',e:'💪',c:'#3b82f6',img:'./avatar_anh.png'},
+  {id:'em',name:'Em',e:'🌸',c:'#db2777',img:'./avatar_em.png'},
+];
+const ACC='var(--accent)';
+const REST_PRESETS=[60,90,120,180];
+
+const uid=()=>Math.random().toString(36).slice(2,8);
+const p2=n=>String(Math.floor(Math.abs(n))).padStart(2,'0');
+const fT=s=>`${p2(s/60)}:${p2(s%60)}`;
+const fD=d=>{try{return new Date(d+'T00:00:00').toLocaleDateString('vi-VN',{weekday:'short',day:'2-digit',month:'2-digit'});}catch{return d;}};
+const durS=ms=>{const m=Math.floor(ms/60000);return m<60?`${m} phút`:`${Math.floor(m/60)}h${m%60>0?' '+m%60+'m':''}`;};
+const restLabel=s=>s<90?`${s}s`:s===90?'90s':`${s/60}m`;
+const sVol=s=>(parseFloat(s.weight)||0)*(parseInt(s.reps)||0);
+const eVol=e=>e.sets.filter(s=>s.done).reduce((t,s)=>t+sVol(s),0);
+const tVol=exs=>exs.reduce((t,e)=>t+eVol(e),0);
+
+const beep = () => {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime); // High pitch notification beep
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  } catch (e) {
+    console.warn('Audio Context error (autoplay block):', e);
+  }
+};
+
+const db={
+  async get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}},
+  async set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+};
+
+const C={
+  bg1:'#090d16',bg2:'#151f32',bg3:'#1f2d47',
+  txt1:'#f8fafc',txt2:'#94a3b8',txt3:'#64748b',
+  bdr:'rgba(255,255,255,0.08)',bdr2:'rgba(255,255,255,0.15)',
+  green:'#10b981',greenBg:'rgba(16,185,129,0.12)',
+  redBg:'rgba(239,68,68,0.12)',red:'#ef4444',
+};
+const r={sm:'8px',md:'12px',lg:'16px',xl:'20px'};
+
+// Svg Icon helper components
+const Svg = ({d,viewBox='0 0 24 24',fill='none',stroke='currentColor',strokeWidth='2',size=24,cx={}})=>html`
+  <svg width=${size} height=${size} viewBox=${viewBox} fill=${fill} stroke=${stroke} stroke-width=${strokeWidth} stroke-linecap="round" stroke-linejoin="round" style=${cx}>
+    ${d}
+  </svg>
+`;
+
+const Icons={
+  home:(props)=>html`<${Svg} ...${props} d=${html`<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`}/>`,
+  progs:(props)=>html`<${Svg} ...${props} d=${html`<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>`}/>`,
+  hist:(props)=>html`<${Svg} ...${props} d=${html`<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>`}/>`,
+  plus:(props)=>html`<${Svg} ...${props} d=${html`<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>`}/>`,
+  close:(props)=>html`<${Svg} ...${props} d=${html`<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>`}/>`,
+  check:(props)=>html`<${Svg} ...${props} d=${html`<polyline points="20 6 9 17 4 12"/>`}/>`,
+  swap:(props)=>html`<${Svg} ...${props} d=${html`<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>`}/>`,
+  trash:(props)=>html`<${Svg} ...${props} d=${html`<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>`}/>`,
+  clock:(props)=>html`<${Svg} ...${props} d=${html`<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`}/>`,
+  flame:(props)=>html`<${Svg} ...${props} d=${html`<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>`}/>`,
+  trophy:(props)=>html`<${Svg} ...${props} d=${html`<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a6 6 0 0 0-6 6v3.58a6 6 0 0 0 6 6 6 6 0 0 0 6-6V8a6 6 0 0 0-6-6z"/>`}/>`
+};
+
+const Wrap=({children,cx})=>html`
+  <div class="slide-up" style=${{fontFamily:'\'Outfit\',-apple-system,BlinkMacSystemFont,sans-serif',height:'100dvh',display:'flex',flexDirection:'column',overflow:'hidden',background:C.bg1,color:C.txt1,maxWidth:500,margin:'0 auto',boxShadow:'0 0 40px rgba(0,0,0,0.8)',borderLeft:`1px solid ${C.bdr}`,borderRight:`1px solid ${C.bdr}`,position:'relative',...cx}}>
+    ${children}
+  </div>`;
+
+const Card=({children,cx,onClick})=>html`
+  <div onClick=${onClick} class="card-hover" style=${{background:C.bg2,borderRadius:r.lg,padding:'16px 18px',marginBottom:12,border:`1px solid ${C.bdr}`,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',...cx}}>${children}</div>`;
+
+const Empty=({icon,msg,sub})=>html`
+  <${Card} cx=${{textAlign:'center',padding:'40px 20px',borderStyle:'dashed'}}>
+    <div style=${{fontSize:48,marginBottom:12,animation:'pulseGlow 2s infinite ease-in-out',display:'inline-block'}}>${icon}</div>
+    <p style=${{margin:'0 0 6px',color:C.txt1,fontSize:15,fontWeight:600}}>${msg}</p>
+    ${sub&&html`<p style=${{margin:0,color:C.txt2,fontSize:13}}>${sub}</p>`}
+  </${Card}>`;
+
+const Label=({t,mt=0})=>html`
+  <p style=${{margin:`${mt}px 0 10px`,fontSize:11,fontWeight:700,color:C.txt3,letterSpacing:'0.09em',textTransform:'uppercase',display:'flex',alignItems:'center',gap:6}}>
+    <span style=${{width:4,height:12,background:ACC,borderRadius:2}}/>${t}
+  </p>`;
+
+const Btn=({children,onClick,cx,variant='primary'})=>{
+  const vs={
+    primary:{background:ACC,color:'#fff',border:'none',padding:'10px 18px',boxShadow:`0 4px 14px var(--accent-glow)`},
+    ghost:{background:C.bg2,color:C.txt1,border:`1px solid ${C.bdr}`,padding:'9px 14px'},
+    danger:{background:C.redBg,color:C.red,border:'none',padding:'7px 12px'},
+    icon:{background:'transparent',color:C.txt2,border:`1px solid ${C.bdr}`,padding:'7px 12px'},
+  };
+  return html`<button onClick=${onClick} class="btn-action" style=${{borderRadius:r.md,cursor:'pointer',fontWeight:600,fontSize:14,display:'flex',alignItems:'center',justifyContent:'center',gap:6,...vs[variant],...cx}}>${children}</button>`;
+};
+
+function ProfileSelect({onSel}){
+  return html`
+    <${Wrap} cx=${{alignItems:'center',justifyContent:'center',padding:28,background:'linear-gradient(135deg, #090d16 0%, #0d1527 100%)',position:'relative'}}>
+      <!-- Background subtle glows -->
+      <div style=${{position:'absolute',width:150,height:150,background:'#3b82f6',filter:'blur(80px)',opacity:0.12,top:'20%',left:'10%',pointerEvents:'none'}}/>
+      <div style=${{position:'absolute',width:150,height:150,background:'#db2777',filter:'blur(80px)',opacity:0.12,bottom:'25%',right:'10%',pointerEvents:'none'}}/>
+      
+      <div class="scale-in" style=${{textAlign:'center',width:'100%',zIndex:1}}>
+        <div style=${{fontSize:52,marginBottom:15,animation:'pulseGlow 2.5s infinite ease-in-out',display:'inline-block',background:'rgba(255,255,255,0.05)',width:90,height:90,lineHeight:'90px',borderRadius:'50%'}}>🏋️</div>
+        <h1 style=${{margin:'0 0 8px',fontSize:36,fontWeight:800,letterSpacing:'-0.03em',background:'linear-gradient(90deg, #f8fafc, #94a3b8)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>GymPair</h1>
+        <p style=${{margin:'0 0 48px',color:C.txt2,fontSize:16,fontWeight:400}}>Chọn hồ sơ để bắt đầu</p>
+        <div style=${{display:'flex',gap:24,justifyContent:'center',width:'100%',maxWidth:340,margin:'0 auto'}}>
+          ${PR.map(p=>html`
+            <button key=${p.id} onClick=${()=>onSel(p.id)} class="btn-action card-hover" style=${{
+              flex:1,padding:'24px 16px 20px',borderRadius:r.xl,
+              border:`1px solid rgba(255,255,255,0.08)`,background:'rgba(21, 31, 50, 0.7)',
+              backdropFilter:'blur(10px)',
+              cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:16,
+              boxShadow:`0 8px 32px rgba(0,0,0,0.4)`
+            }}>
+              <div style=${{position:'relative'}}>
+                <img src=${p.img} style=${{width:84,height:84,borderRadius:'50%',border:`2px solid ${p.c}`,boxShadow:`0 0 15px ${p.c}40`,objectFit:'cover',display:'block'}} />
+                <span style=${{position:'absolute',bottom:-4,right:-4,fontSize:20,background:C.bg2,borderRadius:'50%',width:30,height:30,lineHeight:'30px',textAlign:'center',boxShadow:`0 2px 8px rgba(0,0,0,0.5)`,border:`1px solid rgba(255,255,255,0.1)`}}>${p.e}</span>
+              </div>
+              <span style=${{fontSize:18,fontWeight:700,color:'#f8fafc',letterSpacing:'-0.01em'}}>${p.name}</span>
+            </button>`)}
+        </div>
+      </div>
+    </${Wrap}>`;
+}
+
+function TabBar({tab,onTab}){
+  return html`
+    <nav style=${{display:'flex',borderTop:`1px solid ${C.bdr}`,background:C.bg2,flexShrink:0,paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 16px rgba(0,0,0,0.2)'}}>
+      ${[{id:'home',l:'Trang chủ',i:Icons.home},{id:'progs',l:'Chương trình',i:Icons.progs},{id:'hist',l:'Lịch sử',i:Icons.hist}].map(t=>html`
+        <button key=${t.id} onClick=${()=>onTab(t.id)} class="btn-action" style=${{
+          flex:1,padding:'12px 0 10px',border:'none',background:'transparent',cursor:'pointer',
+          display:'flex',flexDirection:'column',alignItems:'center',gap:4,
+          color:tab===t.id?ACC:C.txt3,
+          transition:'color 0.2s'
+        }}>
+          <${t.i} size=${22} strokeWidth=${2} color=${tab===t.id?ACC:C.txt3}/>
+          <span style=${{fontSize:10,fontWeight:600}}>${t.l}</span>
+        </button>`)}
+    </nav>`;
+}
+
+function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
+  const totalWorkouts = sessions.length;
+  const totalVol = Math.round(sessions.reduce((sum, s) => sum + (s.totalVol || 0), 0));
+  // Last 7 days sessions:
+  const last7DaysCount = sessions.filter(s => {
+    const sDate = new Date(s.date);
+    const diff = (new Date() - sDate) / (1000 * 60 * 60 * 24);
+    return diff <= 7;
+  }).length;
+
+  return html`
+    <div class="fade-in" style=${{padding:'22px 16px'}}>
+      
+      <!-- Hero Motivational Banner -->
+      <div style=${{position:'relative',borderRadius:r.lg,overflow:'hidden',marginBottom:24,height:160,boxShadow:'0 8px 24px rgba(0,0,0,0.5)',border:'1px solid rgba(255,255,255,0.06)'}}>
+        <img src="./workout_hero.png" style=${{width:'100%',height:'100%',objectFit:'cover',filter:'brightness(0.5)'}} />
+        <div style=${{position:'absolute',bottom:0,left:0,right:0,padding:'16px 20px',background:'linear-gradient(0deg, rgba(9,13,22,0.9) 0%, rgba(9,13,22,0) 100%)',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+          <div>
+            <p style=${{margin:0,color:ACC,fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.05em'}}>Xin chào,</p>
+            <h2 style=${{margin:0,fontSize:22,fontWeight:800,letterSpacing:'-0.02em'}}>${profile.name} ${profile.e}</h2>
+          </div>
+          <button onClick=${onSwitch} class="btn-action" style=${{background:'rgba(255,255,255,0.1)',backdropFilter:'blur(5px)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:r.md,padding:'6px 12px',color:'#fff',fontSize:12,fontWeight:600,cursor:'pointer'}}>Đổi hồ sơ</button>
+        </div>
+      </div>
+
+      <!-- Quick Dashboard Stats -->
+      <div style=${{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:24}}>
+        <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
+          <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.flame} size=${18}/></div>
+          <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Tuần này</p>
+          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800}}>${last7DaysCount} buổi</p>
+        </div>
+        <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
+          <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.trophy} size=${18}/></div>
+          <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Tổng số</p>
+          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800}}>${totalWorkouts} buổi</p>
+        </div>
+        <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
+          <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.clock} size=${18}/></div>
+          <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Volume</p>
+          <p style=${{margin:'2px 0 0',fontSize:15,fontWeight:800,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>${totalVol >= 1000 ? (totalVol/1000).toFixed(1) + 't' : totalVol + 'kg'}</p>
+        </div>
+      </div>
+
+      <${Label} t="Bắt đầu tập"/>
+      ${progs.length===0
+        ?html`<${Empty} icon="📋" msg="Chưa có chương trình" sub="Vào tab Chương trình để tạo mới"/>`
+        :progs.map(prog=>html`
+          <${Card} key=${prog.id} cx=${{border:`1px solid ${C.bdr}`}}>
+            <p style=${{margin:'0 0 12px',fontSize:15,fontWeight:700,letterSpacing:'-0.01em'}}>${prog.name}</p>
+            <div style=${{display:'flex',gap:8,flexWrap:'wrap'}}>
+              ${prog.days.map((d,i)=>html`
+                <button key=${i} onClick=${()=>onStart(prog,i)} class="btn-action" style=${{
+                  padding:'8px 14px',borderRadius:r.md,border:'none',
+                  background:ACC,color:'#fff',fontSize:13,fontWeight:600,cursor:'pointer',
+                  boxShadow:`0 4px 12px var(--accent-glow)`,
+                  display:'flex',alignItems:'center',gap:6
+                }}>
+                  <span style=${{fontSize:10}}>▶</span> ${d.name}
+                </button>`)}
+            </div>
+          </${Card}>`)}
+      
+      ${sessions.length>0&&html`
+        <${Label} t="Gần đây" mt=${20}/>
+        ${sessions.slice(0,3).map(s=>html`
+          <${Card} key=${s.id} onClick=${()=>onView(s)} class="card-hover" cx=${{cursor:'pointer',border:`1px solid ${C.bdr}`}}>
+            <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div>
+                <p style=${{margin:'0 0 2px',fontSize:14,fontWeight:700}}>${s.dayName}</p>
+                <p style=${{margin:0,color:C.txt2,fontSize:12}}>${s.progName} · <span style=${{color:C.txt3}}>${fD(s.date)}</span></p>
+              </div>
+              <div style=${{textAlign:'right'}}>
+                <p style=${{margin:'0 0 2px',fontSize:14,fontWeight:800,color:ACC}}>${Math.round(s.totalVol||0)} kg</p>
+                <p style=${{margin:0,color:C.txt3,fontSize:12}}>${durS(s.endTime-s.startTime)}</p>
+              </div>
+            </div>
+          </${Card}>`)}
+      `}
+    </div>`;
+}
+
+function ProgsTab({progs,onNew,onDel,onStart}){
+  return html`
+    <div class="fade-in" style=${{padding:'22px 16px'}}>
+      <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
+        <h2 style=${{margin:0,fontSize:24,fontWeight:800,letterSpacing:'-0.02em'}}>Chương trình</h2>
+        <${Btn} onClick=${onNew} cx=${{display:'flex',alignItems:'center',gap:6}}><${Icons.plus} size=${16}/> Tạo mới</${Btn}>
+      </div>
+      ${progs.length===0
+        ?html`<${Empty} icon="📋" msg="Chưa có chương trình" sub='Nhấn "+ Tạo mới" để bắt đầu'/>`
+        :progs.map(prog=>html`
+          <${Card} key=${prog.id} cx=${{border:`1px solid ${C.bdr}`}}>
+            <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+              <p style=${{margin:0,fontSize:16,fontWeight:700,letterSpacing:'-0.01em'}}>${prog.name}</p>
+              <button onClick=${()=>{if(window.confirm(`Xoá "${prog.name}"?`))onDel(prog.id);}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.trash} size=${14}/></button>
+            </div>
+            <div style=${{display:'flex',gap:8,flexWrap:'wrap'}}>
+              ${prog.days.map((d,i)=>html`
+                <button key=${i} onClick=${()=>onStart(prog,i)} class="btn-action" style=${{
+                  padding:'8px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,
+                  background:C.bg3,color:ACC,fontSize:13,fontWeight:600,cursor:'pointer',
+                  display:'flex',alignItems:'center',gap:4
+                }}>${d.name} <span style=${{color:C.txt3,fontSize:11,fontWeight:500}}>(${d.exercises.length})</span></button>`)}
+            </div>
+          </${Card}>`)}
+    </div>`;
+}
+
+function HistTab({sessions,onView}){
+  return html`
+    <div class="fade-in" style=${{padding:'22px 16px'}}>
+      <h2 style=${{margin:'0 0 20px',fontSize:24,fontWeight:800,letterSpacing:'-0.02em'}}>Lịch sử</h2>
+      ${sessions.length===0
+        ?html`<${Empty} icon="📊" msg="Chưa có buổi tập nào" sub="Hoàn thành một buổi để thấy ở đây"/>`
+        :sessions.map(s=>html`
+          <${Card} key=${s.id} onClick=${()=>onView(s)} class="card-hover" cx=${{cursor:'pointer',border:`1px solid ${C.bdr}`}}>
+            <div style=${{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <div>
+                <p style=${{margin:'0 0 4px',fontSize:15,fontWeight:700,letterSpacing:'-0.01em'}}>${s.dayName}</p>
+                <p style=${{margin:'0 0 6px',color:C.txt2,fontSize:12}}>${s.progName}</p>
+                <p style=${{margin:0,color:C.txt3,fontSize:11,fontWeight:600}}>${fD(s.date)}</p>
+              </div>
+              <div style=${{textAlign:'right'}}>
+                <p style=${{margin:'0 0 4px',fontSize:15,fontWeight:800,color:ACC}}>${Math.round(s.totalVol||0)} kg</p>
+                <p style=${{margin:'0 0 6px',color:C.txt2,fontSize:12}}>${durS(s.endTime-s.startTime)}</p>
+                <p style=${{margin:0,color:C.txt3,fontSize:11,fontWeight:600}}>${s.exs?.length||0} bài</p>
+              </div>
+            </div>
+          </${Card}>`)}
+    </div>`;
+}
+
+function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
+  const [elapsed,setElapsed]=useState(()=>Math.floor((Date.now()-workout.startTime)/1000));
+  const [rest,setRest]=useState(null);
+  const [restTime,setRestTime]=useState(90);
+
+  useEffect(()=>{
+    const iv=setInterval(()=>setElapsed(e=>e+1),1000);
+    return()=>clearInterval(iv);
+  },[]);
+
+  useEffect(()=>{
+    if(!rest||rest.secs<=0)return;
+    const iv=setInterval(()=>{
+      setRest(r=>{
+        if(!r) return null;
+        if(r.secs <= 1) {
+          beep();
+          return {...r, secs: 0};
+        }
+        return {...r, secs: r.secs - 1};
+      });
+    },1000);
+    return()=>clearInterval(iv);
+  },[rest&&rest.secs]);
+
+  const updEx=async(i,ex)=>onChange({...workout,exs:workout.exs.map((e,j)=>j===i?ex:e)});
+  const toggleSet=async(ei,si)=>{
+    const ex=workout.exs[ei];
+    const done=!ex.sets[si].done;
+    const sets=ex.sets.map((s,j)=>j===si?{...s,done}:s);
+    if(done)setRest({secs:restTime,max:restTime});
+    await updEx(ei,{...ex,sets});
+  };
+  const updSet=async(ei,si,f,v)=>{
+    const ex=workout.exs[ei];
+    await updEx(ei,{...ex,sets:ex.sets.map((s,j)=>j===si?{...s,[f]:v}:s)});
+  };
+  const addSet=async(ei)=>{
+    const ex=workout.exs[ei];
+    const last=ex.sets[ex.sets.length-1]||{};
+    await updEx(ei,{...ex,sets:[...ex.sets,{id:uid(),weight:last.weight||'',reps:last.reps||'',rpe:'',done:false}]});
+  };
+  const delSet=async(ei)=>{
+    const ex=workout.exs[ei];
+    if(ex.sets.length<=1)return;
+    await updEx(ei,{...ex,sets:ex.sets.slice(0,-1)});
+  };
+  const replEx=(ei)=>onPickEx(async e=>{
+    await onChange({...workout,exs:workout.exs.map((ex,i)=>i===ei?{...ex,exId:e.id,name:e.name}:ex)});
+  });
+  const addEx=()=>onPickEx(async e=>{
+    await onChange({...workout,exs:[...workout.exs,{id:uid(),exId:e.id,name:e.name,sets:[{id:uid(),weight:'',reps:'',rpe:'',done:false}],notes:''}]});
+  });
+  const addRestSecs=n=>setRest(r=>r?{...r,secs:Math.max(0,r.secs+n),max:Math.max(r.max,r.secs+n)}:null);
+  const vol=tVol(workout.exs);
+
+  return html`
+    <${Wrap}>
+      <div style=${{background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',borderBottom:`1px solid ${C.bdr}`,padding:'14px 16px 12px',flexShrink:0}}>
+        <div style=${{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:12}}>
+          <div>
+            <p style=${{margin:0,fontSize:11,color:C.txt3,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.05em'}}>${workout.progName}</p>
+            <h2 style=${{margin:0,fontSize:20,fontWeight:800,color:'#fff',letterSpacing:'-0.02em'}}>${workout.dayName}</h2>
+          </div>
+          <div style=${{textAlign:'right'}}>
+            <p style=${{margin:0,fontSize:24,fontWeight:800,color:ACC,fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em'}}>${fT(elapsed)}</p>
+            <p style=${{margin:0,fontSize:11,color:C.txt3,fontWeight:500}}>${Math.round(vol)} kg volume</p>
+          </div>
+        </div>
+        <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style=${{display:'flex',alignItems:'center',gap:6}}>
+            <span style=${{fontSize:11,color:C.txt3,fontWeight:600}}>NGHỈ:</span>
+            ${REST_PRESETS.map(t=>html`
+              <button key=${t} onClick=${()=>setRestTime(t)} class="btn-action" style=${{
+                padding:'5px 10px',borderRadius:20,border:'none',cursor:'pointer',fontSize:12,fontWeight:600,
+                background:restTime===t?ACC:'rgba(255,255,255,0.06)',
+                color:restTime===t?'#fff':C.txt2,
+                boxShadow:restTime===t?`0 2px 8px var(--accent-glow)`:'none'
+              }}>${restLabel(t)}</button>`)}
+          </div>
+          <div style=${{display:'flex',gap:8}}>
+            <button onClick=${()=>{if(window.confirm('Huỷ buổi tập?'))onDiscard();}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:r.md,padding:'8px 14px',color:C.txt2,fontSize:12,fontWeight:600,cursor:'pointer'}}>Huỷ</button>
+            <button onClick=${()=>{if(window.confirm('Kết thúc và lưu buổi tập?'))onFinish();}} class="btn-action" style=${{background:C.green,border:'none',borderRadius:r.md,padding:'8px 16px',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer',boxShadow:`0 4px 12px rgba(16,185,129,0.25)`}}>✓ Xong</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Radial Rest Timer Floating Card -->
+      ${rest!==null&&html`
+        <div class="slide-up ${rest.secs === 0 ? 'pulse-red-glow' : ''}" style=${{
+          position:'fixed', bottom: 20, left: 16, right: 16,
+          background:'rgba(21, 31, 50, 0.95)', backdropFilter:'blur(12px)',
+          border:`1px solid ${rest.secs === 0 ? C.red : 'rgba(255,255,255,0.1)'}`,
+          borderRadius:r.lg, padding:'12px 16px', display:'flex', alignItems:'center', gap:14,
+          boxShadow:'0 12px 36px rgba(0,0,0,0.5)', zIndex: 1000
+        }}>
+          <div style=${{position:'relative', width:54, height:54, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+            <svg width="54" height="54" viewBox="0 0 60 60" style=${{transform:'rotate(-90deg)'}}>
+              <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+              <circle cx="30" cy="30" r="26" fill="none" stroke=${rest.secs===0?C.green:ACC} stroke-width="4" 
+                      stroke-dasharray="163.3" 
+                      stroke-dashoffset=${163.3 - (163.3 * rest.secs) / rest.max}
+                      stroke-linecap="round"
+                      style=${{transition:'stroke-dashoffset 1s linear'}} />
+            </svg>
+            <span style=${{position:'absolute', fontSize:14, fontWeight:800, color:'#fff', fontVariantNumeric:'tabular-nums'}}>
+              ${rest.secs}s
+            </span>
+          </div>
+          <div style=${{flex:1}}>
+            <p style=${{margin:0, fontSize:10, color:C.txt3, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em'}}>Thời gian nghỉ</p>
+            <p style=${{margin:0, fontSize:13, fontWeight:700, color:rest.secs===0?C.green:'#fff'}}>
+              ${rest.secs===0?'Hết giờ! Tiếp tục tập thôi 🔥':`Tiếp tục sau ${fT(rest.secs)}`}
+            </p>
+          </div>
+          <div style=${{display:'flex', gap:6, alignItems:'center'}}>
+            ${rest.secs > 0 && html`
+              <button onClick=${()=>addRestSecs(-15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>−15s</button>
+              <button onClick=${()=>addRestSecs(15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>+15s</button>
+            `}
+            <button onClick=${()=>setRest(null)} class="btn-action" style=${{background:'none', border:'none', color:C.txt3, cursor:'pointer', fontSize:22, padding:4, marginLeft:4}}>×</button>
+          </div>
+        </div>
+      `}
+
+      <div style=${{flex:1,overflowY:'auto',paddingBottom:100,WebkitOverflowScrolling:'touch'}}>
+        ${workout.exs.map((ex,ei)=>html`
+          <div key=${ex.id} style=${{borderBottom:`1px solid ${C.bdr}`,padding:'16px 16px'}}>
+            <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+              <p style=${{margin:0,fontSize:15,fontWeight:800,color:ACC,letterSpacing:'-0.01em'}}>${ex.name}</p>
+              <button onClick=${()=>replEx(ei)} class="btn-action" style=${{background:C.bg3,border:`1px solid rgba(255,255,255,0.05)`,borderRadius:r.md,padding:'6px 12px',fontSize:12,fontWeight:600,color:C.txt2,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.swap} size=${12}/> Thay</button>
+            </div>
+            
+            <div style=${{display:'grid',gridTemplateColumns:'24px 1fr 1fr 56px 40px',gap:8,marginBottom:8}}>
+              ${['#','KG','REPS','RPE',''].map((h,i)=>html`<span key=${i} style=${{fontSize:10,fontWeight:700,color:C.txt3,textAlign:'center',letterSpacing:'0.05em'}}>${h}</span>`)}
+            </div>
+            
+            ${ex.sets.map((set,si)=>html`
+              <div key=${set.id} style=${{display:'grid',gridTemplateColumns:'24px 1fr 1fr 56px 40px',gap:8,marginBottom:8,alignItems:'center',opacity:set.done?.6:1,transition:'opacity 0.2s'}}>
+                <span style=${{fontSize:12,color:C.txt3,fontWeight:700,textAlign:'center'}}>${si+1}</span>
+                <input type="number" inputMode="decimal" placeholder="—" value=${set.weight}
+                  onInput=${e=>updSet(ei,si,'weight',e.target.value)}
+                  class=${`workout-input ${set.done?'workout-input-done':''}`}
+                  style=${{padding:'10px 4px',borderRadius:r.md,fontSize:14,textAlign:'center'}}
+                />
+                <input type="number" inputMode="numeric" placeholder="—" value=${set.reps}
+                  onInput=${e=>updSet(ei,si,'reps',e.target.value)}
+                  class=${`workout-input ${set.done?'workout-input-done':''}`}
+                  style=${{padding:'10px 4px',borderRadius:r.md,fontSize:14,textAlign:'center'}}
+                />
+                <input type="number" inputMode="numeric" placeholder="—" min="1" max="10" value=${set.rpe}
+                  onInput=${e=>updSet(ei,si,'rpe',e.target.value)}
+                  class=${`workout-input ${set.done?'workout-input-done':''}`}
+                  style=${{padding:'10px 4px',borderRadius:r.md,fontSize:14,textAlign:'center'}}
+                />
+                <button onClick=${()=>toggleSet(ei,si)} class=${`btn-action ${set.done?'checkmark-pop':''}`} style=${{
+                  width:40,height:40,borderRadius:r.md,border:'none',cursor:'pointer',
+                  background:set.done?C.greenBg:C.bg3,color:set.done?C.green:C.txt3,
+                  fontSize:16,display:'flex',alignItems:'center',justifyContent:'center',
+                  boxShadow:set.done?'0 4px 12px rgba(16,185,129,0.15)':'none',
+                  transition:'all 0.2s'
+                }}>
+                  <${Icons.check} size=${16} strokeWidth=${3} />
+                </button>
+              </div>`)}
+            
+            <div style=${{display:'flex',gap:8,marginTop:12}}>
+              <button onClick=${()=>addSet(ei)} class="btn-action" style=${{background:C.bg3,border:`1px solid rgba(255,255,255,0.05)`,borderRadius:r.md,padding:'8px 14px',fontSize:12,fontWeight:600,color:C.txt1,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.plus} size=${12}/> Set</button>
+              ${ex.sets.length>1&&html`<button onClick=${()=>delSet(ei)} class="btn-action" style=${{background:C.redBg,border:'none',borderRadius:r.md,padding:'8px 14px',fontSize:12,fontWeight:600,color:C.red,cursor:'pointer'}}>− Set</button>`}
+            </div>
+            
+            <input type="text" placeholder="Ghi chú bài tập..." value=${ex.notes}
+              onInput=${e=>updEx(ei,{...ex,notes:e.target.value})}
+              style=${{marginTop:12,width:'100%',padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:12,color:C.txt2,background:C.bg2}}
+            />
+          </div>`)}
+        
+        <div style=${{padding:'20px 16px'}}>
+          <button onClick=${addEx} class="btn-action" style=${{width:'100%',padding:'14px',borderRadius:r.md,border:`1.5px dashed ${C.bdr2}`,background:'transparent',color:ACC,fontSize:13,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>
+            <${Icons.plus} size=${14} /> Thêm bài tập
+          </button>
+        </div>
+      </div>
+    </${Wrap}>`;
+}
+
+function CreateProg({exList,onSave,onClose}){
+  const [name,setName]=useState('');
+  const [days,setDays]=useState([{id:uid(),name:'',exs:[]}]);
+  const [pf,setPf]=useState(null);
+  const [search,setSearch]=useState('');
+
+  const filt=exList.filter(e=>!search||e.name.toLowerCase().includes(search.toLowerCase()));
+  const setDN=(i,v)=>setDays(d=>d.map((day,j)=>j===i?{...day,name:v}:day));
+  const addDay=()=>setDays(d=>[...d,{id:uid(),name:'',exs:[]}]);
+  const delDay=i=>setDays(d=>d.filter((_,j)=>j!==i));
+  const addExToDay=(di,ex)=>{setDays(d=>d.map((day,i)=>i===di?{...day,exs:[...day.exs,{exId:ex.id,name:ex.name,sets:3}]}:day));setPf(null);setSearch('');};
+  const delExFromDay=(di,ei)=>setDays(d=>d.map((day,i)=>i===di?{...day,exs:day.exs.filter((_,j)=>j!==ei)}:day));
+  const setSetsN=(di,ei,v)=>setDays(d=>d.map((day,i)=>i===di?{...day,exs:day.exs.map((e,j)=>j===ei?{...e,sets:Math.max(1,parseInt(v)||1)}:e)}:day));
+  const save=()=>{
+    if(!name.trim())return alert('Nhập tên chương trình!');
+    if(days.some(d=>!d.name.trim()))return alert('Nhập tên cho tất cả các ngày!');
+    if(days.some(d=>d.exs.length===0))return alert('Mỗi ngày cần ít nhất 1 bài tập!');
+    onSave({id:uid(),name:name.trim(),days:days.map(d=>({id:d.id,name:d.name,exercises:d.exs}))});
+  };
+
+  return html`
+    <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+          <${Icons.close} size=${20}/>
+        </button>
+        <h2 style=${{margin:0,fontSize:18,fontWeight:800,flex:1,letterSpacing:'-0.01em'}}>Tạo chương trình</h2>
+        <${Btn} onClick=${save}>Lưu</${Btn}>
+      </div>
+      <div style=${{flex:1,overflowY:'auto',padding:'16px',WebkitOverflowScrolling:'touch'}}>
+        <input type="text" placeholder="Tên chương trình (VD: Push Pull Legs)"
+          value=${name} onInput=${e=>setName(e.target.value)}
+          style=${{width:'100%',padding:'14px 16px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:15,marginBottom:20,background:C.bg2,color:C.txt1,display:'block',transition:'border-color 0.2s'}}
+          onFocus=${e=>e.target.style.borderColor=ACC}
+          onBlur=${e=>e.target.style.borderColor=C.bdr}
+        />
+        ${days.map((day,di)=>html`
+          <div key=${day.id} style=${{background:C.bg2,borderRadius:r.lg,padding:16,marginBottom:16,border:`1px solid ${C.bdr}`}}>
+            <div style=${{display:'flex',gap:10,alignItems:'center',marginBottom:14}}>
+              <input type="text" placeholder="Tên ngày (Push, Chân, Full Body...)"
+                value=${day.name} onInput=${e=>setDN(di,e.target.value)}
+                style=${{flex:1,padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,background:C.bg1,color:C.txt1}}
+              />
+              ${days.length>1&&html`<button onClick=${()=>delDay(di)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.close} size=${16}/></button>`}
+            </div>
+            ${day.exs.map((pe,ei)=>html`
+              <div key=${ei} style=${{display:'flex',alignItems:'center',gap:8,background:C.bg3,borderRadius:r.md,padding:'10px 12px',marginBottom:8,border:`1px solid rgba(255,255,255,0.03)`}}>
+                <span style=${{flex:1,fontSize:13,fontWeight:600,color:C.txt1}}>${pe.name}</span>
+                <input type="number" min="1" max="20" value=${pe.sets}
+                  onInput=${e=>setSetsN(di,ei,e.target.value)}
+                  style=${{width:42,padding:'6px 4px',borderRadius:r.sm,border:`1px solid ${C.bdr}`,fontSize:12,textAlign:'center',color:C.txt1,background:C.bg2}}
+                />
+                <span style=${{fontSize:11,color:C.txt3,fontWeight:600}}>sets</span>
+                <button onClick=${()=>delExFromDay(di,ei)} class="btn-action" style=${{background:'none',border:'none',color:C.txt3,cursor:'pointer',padding:4}}><${Icons.close} size=${16}/></button>
+              </div>`)}
+            ${pf===di?html`
+              <div class="fade-in" style=${{marginTop:12,paddingTop:12,borderTop:`1px solid rgba(255,255,255,0.05)`}}>
+                <input type="text" placeholder="Tìm bài tập..." value=${search}
+                  onInput=${e=>setSearch(e.target.value)}
+                  style=${{width:'100%',padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,marginBottom:8,background:C.bg1,color:C.txt1,boxSizing:'border-box'}}
+                />
+                <div style=${{maxHeight:180,overflowY:'auto',background:C.bg1,borderRadius:r.md,border:`1px solid ${C.bdr}`}}>
+                  ${filt.map(e=>html`
+                    <button key=${e.id} onClick=${()=>addExToDay(di,e)} style=${{
+                      display:'block',width:'100%',background:'transparent',border:'none',
+                      padding:'10px 12px',textAlign:'left',fontSize:13,cursor:'pointer',color:C.txt1,
+                      borderBottom:`1px solid ${C.bdr}`,
+                    }}>${e.name} <span style=${{color:C.txt3,fontSize:11}}>${e.g}</span></button>`)}
+                </div>
+                <button onClick=${()=>{setPf(null);setSearch('');}} style=${{background:'none',border:'none',color:C.txt2,fontSize:12,cursor:'pointer',marginTop:8,fontWeight:600}}>Huỷ</button>
+              </div>`
+            :html`
+              <button onClick=${()=>setPf(di)} class="btn-action" style=${{
+                marginTop:day.exs.length?12:0,width:'100%',background:'transparent',
+                border:`1.5px dashed ${C.bdr2}`,borderRadius:r.md,padding:'11px',color:ACC,fontSize:12,fontWeight:600,cursor:'pointer',
+                display:'flex',alignItems:'center',justifyContent:'center',gap:6
+              }}><${Icons.plus} size=${14} /> Thêm bài tập</button>`}
+          </div>`)}
+        <button onClick=${addDay} class="btn-action" style=${{width:'100%',background:C.bg2,border:`1px solid ${C.bdr2}`,borderRadius:r.md,padding:'14px',fontSize:13,fontWeight:600,color:C.txt1,cursor:'pointer',marginBottom:40,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}><${Icons.plus} size=${16}/> Thêm ngày</button>
+      </div>
+    </${Wrap}>`;
+}
+
+function PickEx({exList,onPick,onClose,onAddEx}){
+  const [s,setS]=useState('');
+  const [nn,setNn]=useState('');
+  const [showA,setShowA]=useState(false);
+  const filt=s?exList.filter(e=>e.name.toLowerCase().includes(s.toLowerCase())||e.g.toLowerCase().includes(s.toLowerCase())):exList;
+  const groups=[...new Set(filt.map(e=>e.g))];
+  const addC=async()=>{
+    if(!nn.trim())return;
+    const ex={id:uid(),name:nn.trim(),g:'Tuỳ chỉnh'};
+    await onAddEx(ex);
+    onPick(ex);
+  };
+  return html`
+    <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
+      <div style=${{padding:'14px 16px 12px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',flexShrink:0}}>
+        <div style=${{display:'flex',gap:12,alignItems:'center',marginBottom:12}}>
+          <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+            <${Icons.close} size=${20}/>
+          </button>
+          <h3 style=${{margin:0,fontSize:18,fontWeight:800,letterSpacing:'-0.01em'}}>Chọn bài tập</h3>
+        </div>
+        <input type="text" placeholder="Tìm bài tập..." value=${s}
+          onInput=${e=>setS(e.target.value)}
+          style=${{width:'100%',padding:'11px 14px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:13,background:C.bg2,color:C.txt1,boxSizing:'border-box'}}
+        />
+      </div>
+      <div style=${{flex:1,overflowY:'auto',padding:'8px 16px',WebkitOverflowScrolling:'touch'}}>
+        ${groups.map(g=>html`
+          <div key=${g}>
+            <${Label} t=${g} mt=${12}/>
+            ${filt.filter(e=>e.g===g).map(e=>html`
+              <button key=${e.id} onClick=${()=>onPick(e)} class="btn-action card-hover" style=${{
+                display:'block',width:'100%',background:C.bg2,border:`1px solid ${C.bdr}`,
+                borderRadius:r.md,padding:'14px 16px',textAlign:'left',fontSize:13,fontWeight:600,
+                cursor:'pointer',marginBottom:8,color:C.txt1,
+              }}>${e.name}</button>`)}
+          </div>`)}
+        ${!showA
+          ?html`<button onClick=${()=>setShowA(true)} class="btn-action" style=${{marginTop:20,marginBottom:40,width:'100%',background:'transparent',border:`1.5px dashed ${C.bdr2}`,borderRadius:r.md,padding:'14px',color:ACC,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6}}><${Icons.plus} size=${16}/> Tạo bài tập mới</button>`
+          :html`
+            <div class="fade-in" style=${{marginTop:20,marginBottom:40,background:C.bg2,borderRadius:r.lg,padding:16,border:`1px solid ${C.bdr}`}}>
+              <p style=${{margin:'0 0 12px',fontSize:13,fontWeight:700}}>Bài tập mới</p>
+              <input type="text" placeholder="Tên bài tập..." value=${nn}
+                onInput=${e=>setNn(e.target.value)}
+                style=${{width:'100%',padding:'11px 14px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,marginBottom:12,background:C.bg1,color:C.txt1,boxSizing:'border-box'}}
+              />
+              <div style=${{display:'flex',gap:8}}>
+                <${Btn} onClick=${addC} cx=${{flex:1,padding:'11px',display:'flex',justifyContent:'center',alignItems:'center'}}>Thêm</${Btn}>
+                <${Btn} onClick=${()=>setShowA(false)} variant="ghost">Huỷ</${Btn}>
+              </div>
+            </div>`}
+      </div>
+    </${Wrap}>`;
+}
+
+function SessDetail({session,onClose}){
+  const dur=session.endTime-session.startTime;
+  const totalSets=session.exs?.reduce((t,e)=>t+e.sets.filter(s=>s.done).length,0)||0;
+  return html`
+    <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,flexShrink:0,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center'}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+          <${Icons.close} size=${20}/>
+        </button>
+        <div style=${{flex:1}}>
+          <h2 style=${{margin:0,fontSize:18,fontWeight:800,letterSpacing:'-0.01em'}}>${session.dayName}</h2>
+          <p style=${{margin:0,color:C.txt3,fontSize:12}}>${session.progName} · ${fD(session.date)}</p>
+        </div>
+      </div>
+      <div style=${{flex:1,overflowY:'auto',padding:'16px',WebkitOverflowScrolling:'touch'}}>
+        <div style=${{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:24}}>
+          ${[
+            {l:'Tổng volume',v:`${Math.round(session.totalVol||0)} kg`,i:Icons.flame},
+            {l:'Thời gian',v:durS(dur),i:Icons.clock},
+            {l:'Số bài tập',v:`${session.exs?.length||0} bài`,i:Icons.progs},
+            {l:'Tổng set',v:`${totalSets} sets`,i:Icons.check},
+          ].map(({l,v,i})=>html`
+            <div key=${l} style=${{background:C.bg2,borderRadius:r.md,padding:'14px 16px',border:`1px solid ${C.bdr}`,display:'flex',alignItems:'center',gap:12}}>
+              <div style=${{color:ACC}}><${i} size=${20}/></div>
+              <div>
+                <p style=${{margin:'0 0 2px',fontSize:10,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>${l}</p>
+                <p style=${{margin:0,fontSize:18,fontWeight:800,color:ACC}}>${v}</p>
+              </div>
+            </div>`)}
+        </div>
+        ${session.exs?.map((ex,i)=>html`
+          <div key=${i} style=${{background:C.bg2,borderRadius:r.lg,padding:16,marginBottom:14,border:`1px solid ${C.bdr}`}}>
+            <p style=${{margin:'0 0 12px',fontSize:14,fontWeight:800,color:ACC,letterSpacing:'-0.01em'}}>${ex.name}</p>
+            <div style=${{display:'flex',flexDirection:'column',gap:8}}>
+              ${ex.sets.filter(s=>s.done).map((set,j)=>html`
+                <div key=${j} style=${{display:'flex',gap:14,padding:'10px 14px',background:C.bg3,borderRadius:r.md,fontSize:13,alignItems:'center',color:C.txt1,border:`1px solid rgba(255,255,255,0.03)`}}>
+                  <span style=${{color:C.txt3,fontSize:11,fontWeight:700,width:16}}>${j+1}</span>
+                  <span style=${{flex:1}}><strong>${set.weight||'—'}</strong> kg</span>
+                  <span style=${{flex:1}}><strong>${set.reps||'—'}</strong> reps</span>
+                  ${set.rpe&&html`<span style=${{background:'rgba(255,255,255,0.06)',padding:'2px 6px',borderRadius:4,color:C.txt2,fontSize:11,fontWeight:600}}>RPE ${set.rpe}</span>`}
+                </div>`)}
+            </div>
+            ${ex.notes&&html`
+              <div style=${{marginTop:10,paddingTop:10,borderTop:`1px solid rgba(255,255,255,0.04)`,fontSize:12,color:C.txt2,fontStyle:'italic',display:'flex',gap:6}}>
+                <span>📝</span>
+                <span>${ex.notes}</span>
+              </div>
+            `}
+          </div>`)}
+      </div>
+    </${Wrap}>`;
+}
+
+function CelebrationModal({onClose, workout, profile}) {
+  // Generate random confetti pieces
+  const pieces = Array.from({length: 80}, (_, i) => {
+    const left = Math.random() * 100; // %
+    const delay = Math.random() * 2; // s
+    const duration = 2 + Math.random() * 2; // s
+    const size = 6 + Math.random() * 8; // px
+    const colors = ['#3b82f6', '#db2777', '#10b981', '#f97316', '#eab308', '#ec4899'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    return html`
+      <div key=${i} class="confetti-piece" style=${{
+        left: `${left}%`,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`,
+        width: `${size}px`,
+        height: `${size * 1.5}px`,
+        background: color,
+        transform: `rotate(${Math.random() * 360}deg)`
+      }} />
+    `;
+  });
+
+  return html`
+    <div class="fade-in" style=${{
+      position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+      background: 'rgba(9, 13, 22, 0.96)', zIndex: 10000,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      padding: 30
+    }}>
+      <div class="confetti-container">${pieces}</div>
+      
+      <div class="scale-in" style=${{textAlign: 'center', maxWidth: 360}}>
+        <div style=${{fontSize: 64, marginBottom: 20, animation: 'checkmarkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'}}>🏆</div>
+        <h2 style=${{fontSize: 28, fontWeight: 800, margin: '0 0 10px', color: '#fff', letterSpacing:'-0.02em'}}>Tuyệt Vời!</h2>
+        <p style=${{fontSize: 16, color: C.txt2, margin: '0 0 32px'}}>Chúc mừng ${profile.name} đã hoàn thành buổi tập 🔥</p>
+        
+        <div style=${{background: C.bg2, borderRadius: r.lg, padding: 20, marginBottom: 32, border: `1px solid ${C.bdr}`, boxShadow: '0 10px 30px rgba(0,0,0,0.5)'}}>
+          <p style=${{margin: 0, fontSize: 11, color: C.txt3, textTransform: 'uppercase', fontWeight: 700, letterSpacing:'0.05em'}}>Buổi tập</p>
+          <p style=${{margin: '2px 0 16px', fontSize: 18, fontWeight: 800, color: ACC, letterSpacing:'-0.01em'}}>${workout.dayName}</p>
+          
+          <div style=${{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16}}>
+            <div>
+              <p style=${{margin: 0, fontSize: 11, color: C.txt3}}>TỔNG VOLUME</p>
+              <p style=${{margin: 0, fontSize: 20, fontWeight: 800}}>${Math.round(tVol(workout.exs))} kg</p>
+            </div>
+            <div>
+              <p style=${{margin: 0, fontSize: 11, color: C.txt3}}>THỜI GIAN</p>
+              <p style=${{margin: 0, fontSize: 20, fontWeight: 800}}>${durS(Date.now() - workout.startTime)}</p>
+            </div>
+          </div>
+        </div>
+        
+        <button onClick=${onClose} class="btn-action pulse-glow" style=${{
+          width: '100%', padding: '14px', borderRadius: r.md, border: 'none',
+          background: ACC, color: '#fff', fontSize: 16, fontWeight: 700,
+          cursor: 'pointer', boxShadow: `0 4px 15px var(--accent-glow)`
+        }}>
+          Đồng ý
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function GymPair(){
+  const [pid,setPid]=useState(null);
+  const [exList,setExList]=useState(EX);
+  const [progs,setProgs]=useState([]);
+  const [sessions,setSessions]=useState([]);
+  const [active,setActive]=useState(null);
+  const [tab,setTab]=useState('home');
+  const [pg,setPg]=useState(null);
+  const [pgCtx,setPgCtx]=useState(null);
+  const [ready,setReady]=useState(false);
+  const [showCelebration,setShowCelebration]=useState(false);
+  const [finishedWorkout,setFinishedWorkout]=useState(null);
+
+  useEffect(()=>{
+    if(!pid){
+      setReady(false);
+      return;
+    }
+    const prof = PR.find(p => p.id === pid);
+    if (prof) {
+      document.documentElement.style.setProperty('--accent', prof.c);
+      document.documentElement.style.setProperty('--accent-glow', prof.c + '26'); // 15% opacity
+    }
+    (async()=>{
+      const[c,p,s,a]=await Promise.all([db.get(`c:${pid}`),db.get(`p:${pid}`),db.get(`s:${pid}`),db.get(`a:${pid}`)]);
+      setExList(c?[...EX,...c]:EX);
+      setProgs(p||[]);
+      setSessions(s||[]);
+      setActive(a||null);
+      setReady(true);
+    })();
+  },[pid]);
+
+  const saveP=p=>{setProgs(p);db.set(`p:${pid}`,p);};
+  const saveS=s=>{setSessions(s);db.set(`s:${pid}`,s);};
+  const saveA=a=>{setActive(a);db.set(`a:${pid}`,a);};
+  const saveC=list=>{setExList(list);db.set(`c:${pid}`,list.filter(e=>!EX.find(b=>b.id===e.id)));};
+
+  const startWorkout=(prog,di)=>{
+    const day=prog.days[di];
+    saveA({
+      id:uid(),progId:prog.id,progName:prog.name,dayName:day.name,
+      startTime:Date.now(),
+      exs:day.exercises.map(pe=>({
+        id:uid(),exId:pe.exId,name:pe.name,
+        sets:Array.from({length:pe.sets||3},()=>({id:uid(),weight:'',reps:'',rpe:'',done:false})),
+        notes:'',
+      })),
+    });
+    setPg(null);setTab('home');
+  };
+
+  const finishWorkout=()=>{
+    if(!active)return;
+    const sess={...active,endTime:Date.now(),totalVol:tVol(active.exs),date:new Date(active.startTime).toISOString().split('T')[0]};
+    const updatedSessions = [sess,...sessions].slice(0,300);
+    saveS(updatedSessions);
+    setFinishedWorkout(active);
+    setShowCelebration(true);
+    db.set(`a:${pid}`,null);
+    setActive(null);
+  };
+
+  const discardWorkout=()=>{db.set(`a:${pid}`,null);setActive(null);};
+  const goPickEx=cb=>{setPg('pick-ex');setPgCtx({cb});};
+  const profile=PR.find(p=>p.id===pid);
+
+  if(!pid)return html`<${ProfileSelect} onSel=${p=>setPid(p)}/>`;
+  if(!ready)return html`<${Wrap} cx=${{alignItems:'center',justifyContent:'center',color:C.txt2,fontSize:14}}>Đang tải...</${Wrap}>`;
+
+  if(showCelebration && finishedWorkout){
+    return html`<${CelebrationModal} workout=${finishedWorkout} profile=${profile} onClose=${()=>{setShowCelebration(false);setFinishedWorkout(null);}}/>`;
+  }
+
+  if(active){
+    if(pg==='pick-ex')return html`<${PickEx} exList=${exList} onPick=${e=>{pgCtx&&pgCtx.cb(e);setPg(null);setPgCtx(null);}} onClose=${()=>{setPg(null);setPgCtx(null);}} onAddEx=${ex=>saveC([...exList,ex])}/>`;
+    return html`<${ActiveWorkout} workout=${active} onChange=${saveA} onFinish=${finishWorkout} onDiscard=${discardWorkout} onPickEx=${goPickEx}/>`;
+  }
+  if(pg==='create-prog')return html`<${CreateProg} exList=${exList} onSave=${p=>{saveP([...progs,p]);setPg(null);}} onClose=${()=>setPg(null)}/>`;
+  if(pg==='sess-detail')return html`<${SessDetail} session=${pgCtx} onClose=${()=>{setPg.null;setPg(null);setPgCtx(null);}}/>`;
+
+  return html`
+    <${Wrap}>
+      <div style=${{flex:1,overflowY:'auto',WebkitOverflowScrolling:'touch',paddingBottom:20}}>
+        ${tab==='home'&&html`<${HomeTab} profile=${profile} progs=${progs} sessions=${sessions} onStart=${startWorkout} onView=${s=>{setPg('sess-detail');setPgCtx(s);}} onSwitch=${()=>setPid(null)}/>`}
+        ${tab==='progs'&&html`<${ProgsTab} progs=${progs} onNew=${()=>setPg('create-prog')} onDel=${id=>saveP(progs.filter(p=>p.id!==id))} onStart=${startWorkout}/>`}
+        ${tab==='hist'&&html`<${HistTab} sessions=${sessions} onView=${s=>{setPg('sess-detail');setPgCtx(s);}}/>`}
+      </div>
+      <${TabBar} tab=${tab} onTab=${setTab}/>
+    </${Wrap}>`;
+}
+
+render(html`<${GymPair}/>`,document.getElementById('root'));
+</script>
+</body>
+</html>

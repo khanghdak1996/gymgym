@@ -5,16 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <title>GymPair</title>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="GymPair"/>
-<meta name="theme-color" content="#090d16"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#ffffff"/>
 <style>
 :root {
-  --accent: #f97316;
-  --accent-glow: rgba(249, 115, 22, 0.15);
+  --accent: #0084ff;
+  --accent-glow: rgba(0, 132, 255, 0.08);
 }
 *{
   box-sizing:border-box;
@@ -25,11 +22,11 @@
 html,body,#root{
   height:100%;
   width:100%;
-  background:#090d16;
+  background:#f1f5f9;
 }
 body{
-  font-family:'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color:#f8fafc;
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color:#0f172a;
   overflow:hidden;
   user-select: none;
   -webkit-user-select: none;
@@ -46,19 +43,19 @@ input:focus,button:focus{
 
 /* Animations */
 .fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 .slide-up {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .slide-in-right {
-  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .scale-in {
-  animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 .checkmark-pop {
-  animation: checkmarkPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: checkmarkPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 .pulse-glow {
   animation: pulseGlow 2s infinite ease-in-out;
@@ -69,30 +66,30 @@ input:focus,button:focus{
   to { opacity: 1; }
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
+  from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9); }
+  from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
 @keyframes checkmarkPop {
-  0% { transform: scale(0.6); }
-  50% { transform: scale(1.2); }
+  0% { transform: scale(0.85); }
+  50% { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
 @keyframes pulseGlow {
   0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-  70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+  70% { box-shadow: 0 0 0 8px rgba(0, 0, 0, 0); }
   100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
 }
 @keyframes pulseRedGlow {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.25); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 .pulse-red-glow {
@@ -115,7 +112,7 @@ input:focus,button:focus{
   position: absolute;
   width: 8px;
   height: 12px;
-  opacity: 0.8;
+  opacity: 0.85;
   animation: confettiFall 2.8s linear forwards;
 }
 
@@ -124,30 +121,31 @@ input:focus,button:focus{
   transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, opacity 0.15s, box-shadow 0.2s;
 }
 .btn-action:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 .card-hover {
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, border-color 0.2s;
 }
 .card-hover:active {
-  transform: scale(0.975);
+  transform: scale(0.98);
 }
 
 /* Custom styled inputs */
 .workout-input {
-  background: #151f32;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #f8fafc;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
 }
 .workout-input:focus {
   border-color: var(--accent) !important;
   box-shadow: 0 0 8px var(--accent-glow);
+  background: #ffffff;
 }
 .workout-input-done {
-  background: rgba(255,255,255,0.02) !important;
-  color: #64748b !important;
-  border-color: rgba(255,255,255,0.03) !important;
+  background: #e6f9f3 !important;
+  color: #10b981 !important;
+  border-color: #a7f3d0 !important;
 }
 </style>
 </head>
@@ -256,8 +254,8 @@ const EX=[
 ];
 
 const PR=[
-  {id:'anh',name:'Anh',e:'💪',c:'#3b82f6',img:'./avatar_anh.png'},
-  {id:'em',name:'Em',e:'🌸',c:'#db2777',img:'./avatar_em.png'},
+  {id:'anh',name:'Anh',c:'#0084ff',img:'./avatar_anh.png'},
+  {id:'em',name:'Em',c:'#db2777',img:'./avatar_em.png'},
 ];
 const ACC='var(--accent)';
 const REST_PRESETS=[60,90,120,180];
@@ -280,12 +278,12 @@ const beep = () => {
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime); // High pitch notification beep
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+    gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.4);
+    osc.stop(ctx.currentTime + 0.35);
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
   } catch (e) {
     console.warn('Audio Context error (autoplay block):', e);
@@ -298,11 +296,11 @@ const db={
 };
 
 const C={
-  bg1:'#090d16',bg2:'#151f32',bg3:'#1f2d47',
-  txt1:'#f8fafc',txt2:'#94a3b8',txt3:'#64748b',
-  bdr:'rgba(255,255,255,0.08)',bdr2:'rgba(255,255,255,0.15)',
-  green:'#10b981',greenBg:'rgba(16,185,129,0.12)',
-  redBg:'rgba(239,68,68,0.12)',red:'#ef4444',
+  bg1:'#f8fafc',bg2:'#ffffff',bg3:'#f1f5f9',
+  txt1:'#0f172a',txt2:'#475569',txt3:'#94a3b8',
+  bdr:'#e2e8f0',bdr2:'#cbd5e1',
+  green:'#10b981',greenBg:'#e6f9f3',
+  redBg:'#fee2e2',red:'#ef4444',
 };
 const r={sm:'8px',md:'12px',lg:'16px',xl:'20px'};
 
@@ -328,12 +326,12 @@ const Icons={
 };
 
 const Wrap=({children,cx})=>html`
-  <div class="slide-up" style=${{fontFamily:'\'Outfit\',-apple-system,BlinkMacSystemFont,sans-serif',height:'100dvh',display:'flex',flexDirection:'column',overflow:'hidden',background:C.bg1,color:C.txt1,maxWidth:500,margin:'0 auto',boxShadow:'0 0 40px rgba(0,0,0,0.8)',borderLeft:`1px solid ${C.bdr}`,borderRight:`1px solid ${C.bdr}`,position:'relative',...cx}}>
+  <div class="slide-up" style=${{fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',height:'100dvh',display:'flex',flexDirection:'column',overflow:'hidden',background:C.bg1,color:C.txt1,maxWidth:500,margin:'0 auto',boxShadow:'0 0 30px rgba(0,0,0,0.06)',borderLeft:`1px solid ${C.bdr}`,borderRight:`1px solid ${C.bdr}`,position:'relative',...cx}}>
     ${children}
   </div>`;
 
 const Card=({children,cx,onClick})=>html`
-  <div onClick=${onClick} class="card-hover" style=${{background:C.bg2,borderRadius:r.lg,padding:'16px 18px',marginBottom:12,border:`1px solid ${C.bdr}`,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',...cx}}>${children}</div>`;
+  <div onClick=${onClick} class="card-hover" style=${{background:C.bg2,borderRadius:r.lg,padding:'16px 18px',marginBottom:12,border:`1px solid ${C.bdr}`,boxShadow:'0 2px 8px rgba(0,0,0,0.02)',...cx}}>${children}</div>`;
 
 const Empty=({icon,msg,sub})=>html`
   <${Card} cx=${{textAlign:'center',padding:'40px 20px',borderStyle:'dashed'}}>
@@ -349,7 +347,7 @@ const Label=({t,mt=0})=>html`
 
 const Btn=({children,onClick,cx,variant='primary'})=>{
   const vs={
-    primary:{background:ACC,color:'#fff',border:'none',padding:'10px 18px',boxShadow:`0 4px 14px var(--accent-glow)`},
+    primary:{background:ACC,color:'#fff',border:'none',padding:'10px 18px',boxShadow:`0 3px 8px var(--accent-glow)`},
     ghost:{background:C.bg2,color:C.txt1,border:`1px solid ${C.bdr}`,padding:'9px 14px'},
     danger:{background:C.redBg,color:C.red,border:'none',padding:'7px 12px'},
     icon:{background:'transparent',color:C.txt2,border:`1px solid ${C.bdr}`,padding:'7px 12px'},
@@ -359,29 +357,27 @@ const Btn=({children,onClick,cx,variant='primary'})=>{
 
 function ProfileSelect({onSel}){
   return html`
-    <${Wrap} cx=${{alignItems:'center',justifyContent:'center',padding:28,background:'linear-gradient(135deg, #090d16 0%, #0d1527 100%)',position:'relative'}}>
+    <${Wrap} cx=${{alignItems:'center',justifyContent:'center',padding:28,background:'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',position:'relative'}}>
       <!-- Background subtle glows -->
-      <div style=${{position:'absolute',width:150,height:150,background:'#3b82f6',filter:'blur(80px)',opacity:0.12,top:'20%',left:'10%',pointerEvents:'none'}}/>
-      <div style=${{position:'absolute',width:150,height:150,background:'#db2777',filter:'blur(80px)',opacity:0.12,bottom:'25%',right:'10%',pointerEvents:'none'}}/>
+      <div style=${{position:'absolute',width:150,height:150,background:'#0084ff',filter:'blur(80px)',opacity:0.1,top:'20%',left:'10%',pointerEvents:'none'}}/>
+      <div style=${{position:'absolute',width:150,height:150,background:'#db2777',filter:'blur(80px)',opacity:0.1,bottom:'25%',right:'10%',pointerEvents:'none'}}/>
       
       <div class="scale-in" style=${{textAlign:'center',width:'100%',zIndex:1}}>
-        <div style=${{fontSize:52,marginBottom:15,animation:'pulseGlow 2.5s infinite ease-in-out',display:'inline-block',background:'rgba(255,255,255,0.05)',width:90,height:90,lineHeight:'90px',borderRadius:'50%'}}>🏋️</div>
-        <h1 style=${{margin:'0 0 8px',fontSize:36,fontWeight:800,letterSpacing:'-0.03em',background:'linear-gradient(90deg, #f8fafc, #94a3b8)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>GymPair</h1>
+        <div style=${{fontSize:52,marginBottom:15,animation:'pulseGlow 2.5s infinite ease-in-out',display:'inline-block',background:'rgba(0,0,0,0.03)',width:90,height:90,lineHeight:'90px',borderRadius:'50%'}}>🏋️</div>
+        <h1 style=${{margin:'0 0 8px',fontSize:36,fontWeight:800,letterSpacing:'-0.03em',background:'linear-gradient(90deg, #0f172a, #475569)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>GymPair</h1>
         <p style=${{margin:'0 0 48px',color:C.txt2,fontSize:16,fontWeight:400}}>Chọn hồ sơ để bắt đầu</p>
         <div style=${{display:'flex',gap:24,justifyContent:'center',width:'100%',maxWidth:340,margin:'0 auto'}}>
           ${PR.map(p=>html`
             <button key=${p.id} onClick=${()=>onSel(p.id)} class="btn-action card-hover" style=${{
               flex:1,padding:'24px 16px 20px',borderRadius:r.xl,
-              border:`1px solid rgba(255,255,255,0.08)`,background:'rgba(21, 31, 50, 0.7)',
-              backdropFilter:'blur(10px)',
+              border:`1px solid #e2e8f0`,background:'#ffffff',
               cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:16,
-              boxShadow:`0 8px 32px rgba(0,0,0,0.4)`
+              boxShadow:`0 8px 24px rgba(0,0,0,0.05)`
             }}>
-              <div style=${{position:'relative'}}>
-                <img src=${p.img} style=${{width:84,height:84,borderRadius:'50%',border:`2px solid ${p.c}`,boxShadow:`0 0 15px ${p.c}40`,objectFit:'cover',display:'block'}} />
-                <span style=${{position:'absolute',bottom:-4,right:-4,fontSize:20,background:C.bg2,borderRadius:'50%',width:30,height:30,lineHeight:'30px',textAlign:'center',boxShadow:`0 2px 8px rgba(0,0,0,0.5)`,border:`1px solid rgba(255,255,255,0.1)`}}>${p.e}</span>
+              <div>
+                <img src=${p.img} style=${{width:84,height:84,borderRadius:'50%',border:`2px solid ${p.c}`,boxShadow:`0 0 15px ${p.c}20`,objectFit:'cover',display:'block'}} />
               </div>
-              <span style=${{fontSize:18,fontWeight:700,color:'#f8fafc',letterSpacing:'-0.01em'}}>${p.name}</span>
+              <span style=${{fontSize:18,fontWeight:700,color:'#0f172a',letterSpacing:'-0.01em'}}>${p.name}</span>
             </button>`)}
         </div>
       </div>
@@ -390,7 +386,7 @@ function ProfileSelect({onSel}){
 
 function TabBar({tab,onTab}){
   return html`
-    <nav style=${{display:'flex',borderTop:`1px solid ${C.bdr}`,background:C.bg2,flexShrink:0,paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 16px rgba(0,0,0,0.2)'}}>
+    <nav style=${{display:'flex',borderTop:`1px solid ${C.bdr}`,background:'#ffffff',flexShrink:0,paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -2px 10px rgba(0,0,0,0.03)'}}>
       ${[{id:'home',l:'Trang chủ',i:Icons.home},{id:'progs',l:'Chương trình',i:Icons.progs},{id:'hist',l:'Lịch sử',i:Icons.hist}].map(t=>html`
         <button key=${t.id} onClick=${()=>onTab(t.id)} class="btn-action" style=${{
           flex:1,padding:'12px 0 10px',border:'none',background:'transparent',cursor:'pointer',
@@ -407,7 +403,6 @@ function TabBar({tab,onTab}){
 function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
   const totalWorkouts = sessions.length;
   const totalVol = Math.round(sessions.reduce((sum, s) => sum + (s.totalVol || 0), 0));
-  // Last 7 days sessions:
   const last7DaysCount = sessions.filter(s => {
     const sDate = new Date(s.date);
     const diff = (new Date() - sDate) / (1000 * 60 * 60 * 24);
@@ -418,14 +413,14 @@ function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
     <div class="fade-in" style=${{padding:'22px 16px'}}>
       
       <!-- Hero Motivational Banner -->
-      <div style=${{position:'relative',borderRadius:r.lg,overflow:'hidden',marginBottom:24,height:160,boxShadow:'0 8px 24px rgba(0,0,0,0.5)',border:'1px solid rgba(255,255,255,0.06)'}}>
-        <img src="./workout_hero.png" style=${{width:'100%',height:'100%',objectFit:'cover',filter:'brightness(0.5)'}} />
-        <div style=${{position:'absolute',bottom:0,left:0,right:0,padding:'16px 20px',background:'linear-gradient(0deg, rgba(9,13,22,0.9) 0%, rgba(9,13,22,0) 100%)',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+      <div style=${{position:'relative',borderRadius:r.lg,overflow:'hidden',marginBottom:24,height:160,boxShadow:'0 8px 24px rgba(0,0,0,0.15)',border:'1px solid #e2e8f0'}}>
+        <img src="./workout_hero.png" style=${{width:'100%',height:'100%',objectFit:'cover',filter:'brightness(0.65)'}} />
+        <div style=${{position:'absolute',bottom:0,left:0,right:0,padding:'16px 20px',background:'linear-gradient(0deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
           <div>
             <p style=${{margin:0,color:ACC,fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.05em'}}>Xin chào,</p>
-            <h2 style=${{margin:0,fontSize:22,fontWeight:800,letterSpacing:'-0.02em'}}>${profile.name} ${profile.e}</h2>
+            <h2 style=${{margin:0,fontSize:22,fontWeight:800,color:'#0f172a',letterSpacing:'-0.02em'}}>${profile.name}</h2>
           </div>
-          <button onClick=${onSwitch} class="btn-action" style=${{background:'rgba(255,255,255,0.1)',backdropFilter:'blur(5px)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:r.md,padding:'6px 12px',color:'#fff',fontSize:12,fontWeight:600,cursor:'pointer'}}>Đổi hồ sơ</button>
+          <button onClick=${onSwitch} class="btn-action" style=${{background:'rgba(0,0,0,0.06)',backdropFilter:'blur(5px)',border:'1px solid rgba(0,0,0,0.08)',borderRadius:r.md,padding:'6px 12px',color:'#0f172a',fontSize:12,fontWeight:600,cursor:'pointer'}}>Đổi hồ sơ</button>
         </div>
       </div>
 
@@ -434,17 +429,17 @@ function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
         <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
           <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.flame} size=${18}/></div>
           <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Tuần này</p>
-          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800}}>${last7DaysCount} buổi</p>
+          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800,color:'#0f172a'}}>${last7DaysCount} buổi</p>
         </div>
         <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
           <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.trophy} size=${18}/></div>
           <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Tổng số</p>
-          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800}}>${totalWorkouts} buổi</p>
+          <p style=${{margin:'2px 0 0',fontSize:16,fontWeight:800,color:'#0f172a'}}>${totalWorkouts} buổi</p>
         </div>
         <div style=${{background:C.bg2,borderRadius:r.md,padding:'12px 8px',textAlign:'center',border:`1px solid ${C.bdr}`}}>
           <div style=${{display:'flex',justifyContent:'center',color:ACC,marginBottom:4}}><${Icons.clock} size=${18}/></div>
           <p style=${{margin:0,fontSize:9,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>Volume</p>
-          <p style=${{margin:'2px 0 0',fontSize:15,fontWeight:800,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>${totalVol >= 1000 ? (totalVol/1000).toFixed(1) + 't' : totalVol + 'kg'}</p>
+          <p style=${{margin:'2px 0 0',fontSize:15,fontWeight:800,color:'#0f172a',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>${totalVol >= 1000 ? (totalVol/1000).toFixed(1) + 't' : totalVol + 'kg'}</p>
         </div>
       </div>
 
@@ -453,13 +448,13 @@ function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
         ?html`<${Empty} icon="📋" msg="Chưa có chương trình" sub="Vào tab Chương trình để tạo mới"/>`
         :progs.map(prog=>html`
           <${Card} key=${prog.id} cx=${{border:`1px solid ${C.bdr}`}}>
-            <p style=${{margin:'0 0 12px',fontSize:15,fontWeight:700,letterSpacing:'-0.01em'}}>${prog.name}</p>
+            <p style=${{margin:'0 0 12px',fontSize:15,fontWeight:700,letterSpacing:'-0.01em',color:'#0f172a'}}>${prog.name}</p>
             <div style=${{display:'flex',gap:8,flexWrap:'wrap'}}>
               ${prog.days.map((d,i)=>html`
                 <button key=${i} onClick=${()=>onStart(prog,i)} class="btn-action" style=${{
                   padding:'8px 14px',borderRadius:r.md,border:'none',
                   background:ACC,color:'#fff',fontSize:13,fontWeight:600,cursor:'pointer',
-                  boxShadow:`0 4px 12px var(--accent-glow)`,
+                  boxShadow:`0 3px 8px var(--accent-glow)`,
                   display:'flex',alignItems:'center',gap:6
                 }}>
                   <span style=${{fontSize:10}}>▶</span> ${d.name}
@@ -473,7 +468,7 @@ function HomeTab({profile,progs,sessions,onStart,onView,onSwitch}){
           <${Card} key=${s.id} onClick=${()=>onView(s)} class="card-hover" cx=${{cursor:'pointer',border:`1px solid ${C.bdr}`}}>
             <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
               <div>
-                <p style=${{margin:'0 0 2px',fontSize:14,fontWeight:700}}>${s.dayName}</p>
+                <p style=${{margin:'0 0 2px',fontSize:14,fontWeight:700,color:'#0f172a'}}>${s.dayName}</p>
                 <p style=${{margin:0,color:C.txt2,fontSize:12}}>${s.progName} · <span style=${{color:C.txt3}}>${fD(s.date)}</span></p>
               </div>
               <div style=${{textAlign:'right'}}>
@@ -490,7 +485,7 @@ function ProgsTab({progs,onNew,onDel,onStart}){
   return html`
     <div class="fade-in" style=${{padding:'22px 16px'}}>
       <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
-        <h2 style=${{margin:0,fontSize:24,fontWeight:800,letterSpacing:'-0.02em'}}>Chương trình</h2>
+        <h2 style=${{margin:0,fontSize:24,fontWeight:800,color:'#0f172a',letterSpacing:'-0.02em'}}>Chương trình</h2>
         <${Btn} onClick=${onNew} cx=${{display:'flex',alignItems:'center',gap:6}}><${Icons.plus} size=${16}/> Tạo mới</${Btn}>
       </div>
       ${progs.length===0
@@ -498,8 +493,8 @@ function ProgsTab({progs,onNew,onDel,onStart}){
         :progs.map(prog=>html`
           <${Card} key=${prog.id} cx=${{border:`1px solid ${C.bdr}`}}>
             <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-              <p style=${{margin:0,fontSize:16,fontWeight:700,letterSpacing:'-0.01em'}}>${prog.name}</p>
-              <button onClick=${()=>{if(window.confirm(`Xoá "${prog.name}"?`))onDel(prog.id);}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.trash} size=${14}/></button>
+              <p style=${{margin:0,fontSize:16,fontWeight:700,color:'#0f172a',letterSpacing:'-0.01em'}}>${prog.name}</p>
+              <button onClick=${()=>{if(window.confirm(`Xoá "${prog.name}"?`))onDel(prog.id);}} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.trash} size=${14}/></button>
             </div>
             <div style=${{display:'flex',gap:8,flexWrap:'wrap'}}>
               ${prog.days.map((d,i)=>html`
@@ -516,14 +511,14 @@ function ProgsTab({progs,onNew,onDel,onStart}){
 function HistTab({sessions,onView}){
   return html`
     <div class="fade-in" style=${{padding:'22px 16px'}}>
-      <h2 style=${{margin:'0 0 20px',fontSize:24,fontWeight:800,letterSpacing:'-0.02em'}}>Lịch sử</h2>
+      <h2 style=${{margin:'0 0 20px',fontSize:24,fontWeight:800,color:'#0f172a',letterSpacing:'-0.02em'}}>Lịch sử</h2>
       ${sessions.length===0
         ?html`<${Empty} icon="📊" msg="Chưa có buổi tập nào" sub="Hoàn thành một buổi để thấy ở đây"/>`
         :sessions.map(s=>html`
           <${Card} key=${s.id} onClick=${()=>onView(s)} class="card-hover" cx=${{cursor:'pointer',border:`1px solid ${C.bdr}`}}>
             <div style=${{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
               <div>
-                <p style=${{margin:'0 0 4px',fontSize:15,fontWeight:700,letterSpacing:'-0.01em'}}>${s.dayName}</p>
+                <p style=${{margin:'0 0 4px',fontSize:15,fontWeight:700,color:'#0f172a',letterSpacing:'-0.01em'}}>${s.dayName}</p>
                 <p style=${{margin:'0 0 6px',color:C.txt2,fontSize:12}}>${s.progName}</p>
                 <p style=${{margin:0,color:C.txt3,fontSize:11,fontWeight:600}}>${fD(s.date)}</p>
               </div>
@@ -595,11 +590,11 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
 
   return html`
     <${Wrap}>
-      <div style=${{background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',borderBottom:`1px solid ${C.bdr}`,padding:'14px 16px 12px',flexShrink:0}}>
+      <div style=${{background:'#ffffff',borderBottom:`1px solid ${C.bdr}`,padding:'14px 16px 12px',flexShrink:0}}>
         <div style=${{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:12}}>
           <div>
             <p style=${{margin:0,fontSize:11,color:C.txt3,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.05em'}}>${workout.progName}</p>
-            <h2 style=${{margin:0,fontSize:20,fontWeight:800,color:'#fff',letterSpacing:'-0.02em'}}>${workout.dayName}</h2>
+            <h2 style=${{margin:0,fontSize:20,fontWeight:800,color:'#0f172a',letterSpacing:'-0.02em'}}>${workout.dayName}</h2>
           </div>
           <div style=${{textAlign:'right'}}>
             <p style=${{margin:0,fontSize:24,fontWeight:800,color:ACC,fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em'}}>${fT(elapsed)}</p>
@@ -612,14 +607,14 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
             ${REST_PRESETS.map(t=>html`
               <button key=${t} onClick=${()=>setRestTime(t)} class="btn-action" style=${{
                 padding:'5px 10px',borderRadius:20,border:'none',cursor:'pointer',fontSize:12,fontWeight:600,
-                background:restTime===t?ACC:'rgba(255,255,255,0.06)',
+                background:restTime===t?ACC:'#f1f5f9',
                 color:restTime===t?'#fff':C.txt2,
                 boxShadow:restTime===t?`0 2px 8px var(--accent-glow)`:'none'
               }}>${restLabel(t)}</button>`)}
           </div>
           <div style=${{display:'flex',gap:8}}>
-            <button onClick=${()=>{if(window.confirm('Huỷ buổi tập?'))onDiscard();}} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:r.md,padding:'8px 14px',color:C.txt2,fontSize:12,fontWeight:600,cursor:'pointer'}}>Huỷ</button>
-            <button onClick=${()=>{if(window.confirm('Kết thúc và lưu buổi tập?'))onFinish();}} class="btn-action" style=${{background:C.green,border:'none',borderRadius:r.md,padding:'8px 16px',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer',boxShadow:`0 4px 12px rgba(16,185,129,0.25)`}}>✓ Xong</button>
+            <button onClick=${()=>{if(window.confirm('Huỷ buổi tập?'))onDiscard();}} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:r.md,padding:'8px 14px',color:C.txt2,fontSize:12,fontWeight:600,cursor:'pointer'}}>Huỷ</button>
+            <button onClick=${()=>{if(window.confirm('Kết thúc và lưu buổi tập?'))onFinish();}} class="btn-action" style=${{background:C.green,border:'none',borderRadius:r.md,padding:'8px 16px',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer',boxShadow:`0 4px 12px rgba(16,185,129,0.2)`}}>✓ Xong</button>
           </div>
         </div>
       </div>
@@ -628,34 +623,34 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
       ${rest!==null&&html`
         <div class="slide-up ${rest.secs === 0 ? 'pulse-red-glow' : ''}" style=${{
           position:'fixed', bottom: 20, left: 16, right: 16,
-          background:'rgba(21, 31, 50, 0.95)', backdropFilter:'blur(12px)',
-          border:`1px solid ${rest.secs === 0 ? C.red : 'rgba(255,255,255,0.1)'}`,
+          background:'rgba(255, 255, 255, 0.95)', backdropFilter:'blur(12px)',
+          border:`1px solid ${rest.secs === 0 ? C.red : '#e2e8f0'}`,
           borderRadius:r.lg, padding:'12px 16px', display:'flex', alignItems:'center', gap:14,
-          boxShadow:'0 12px 36px rgba(0,0,0,0.5)', zIndex: 1000
+          boxShadow:'0 10px 30px rgba(0,0,0,0.08)', zIndex: 1000
         }}>
           <div style=${{position:'relative', width:54, height:54, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
             <svg width="54" height="54" viewBox="0 0 60 60" style=${{transform:'rotate(-90deg)'}}>
-              <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+              <circle cx="30" cy="30" r="26" fill="none" stroke="#f1f5f9" stroke-width="4" />
               <circle cx="30" cy="30" r="26" fill="none" stroke=${rest.secs===0?C.green:ACC} stroke-width="4" 
                       stroke-dasharray="163.3" 
                       stroke-dashoffset=${163.3 - (163.3 * rest.secs) / rest.max}
                       stroke-linecap="round"
                       style=${{transition:'stroke-dashoffset 1s linear'}} />
             </svg>
-            <span style=${{position:'absolute', fontSize:14, fontWeight:800, color:'#fff', fontVariantNumeric:'tabular-nums'}}>
+            <span style=${{position:'absolute', fontSize:14, fontWeight:800, color:'#0f172a', fontVariantNumeric:'tabular-nums'}}>
               ${rest.secs}s
             </span>
           </div>
           <div style=${{flex:1}}>
             <p style=${{margin:0, fontSize:10, color:C.txt3, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em'}}>Thời gian nghỉ</p>
-            <p style=${{margin:0, fontSize:13, fontWeight:700, color:rest.secs===0?C.green:'#fff'}}>
+            <p style=${{margin:0, fontSize:13, fontWeight:700, color:rest.secs===0?C.green:'#0f172a'}}>
               ${rest.secs===0?'Hết giờ! Tiếp tục tập thôi 🔥':`Tiếp tục sau ${fT(rest.secs)}`}
             </p>
           </div>
           <div style=${{display:'flex', gap:6, alignItems:'center'}}>
             ${rest.secs > 0 && html`
-              <button onClick=${()=>addRestSecs(-15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>−15s</button>
-              <button onClick=${()=>addRestSecs(15)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#fff', cursor:'pointer'}}>+15s</button>
+              <button onClick=${()=>addRestSecs(-15)} class="btn-action" style=${{background:'#f1f5f9', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#475569', cursor:'pointer'}}>−15s</button>
+              <button onClick=${()=>addRestSecs(15)} class="btn-action" style=${{background:'#f1f5f9', border:'none', borderRadius:r.sm, padding:'6px 8px', fontSize:11, fontWeight:600, color:'#475569', cursor:'pointer'}}>+15s</button>
             `}
             <button onClick=${()=>setRest(null)} class="btn-action" style=${{background:'none', border:'none', color:C.txt3, cursor:'pointer', fontSize:22, padding:4, marginLeft:4}}>×</button>
           </div>
@@ -667,7 +662,7 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
           <div key=${ex.id} style=${{borderBottom:`1px solid ${C.bdr}`,padding:'16px 16px'}}>
             <div style=${{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
               <p style=${{margin:0,fontSize:15,fontWeight:800,color:ACC,letterSpacing:'-0.01em'}}>${ex.name}</p>
-              <button onClick=${()=>replEx(ei)} class="btn-action" style=${{background:C.bg3,border:`1px solid rgba(255,255,255,0.05)`,borderRadius:r.md,padding:'6px 12px',fontSize:12,fontWeight:600,color:C.txt2,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.swap} size=${12}/> Thay</button>
+              <button onClick=${()=>replEx(ei)} class="btn-action" style=${{background:'#f1f5f9',border:`1px solid #e2e8f0`,borderRadius:r.md,padding:'6px 12px',fontSize:12,fontWeight:600,color:C.txt2,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.swap} size=${12}/> Thay</button>
             </div>
             
             <div style=${{display:'grid',gridTemplateColumns:'24px 1fr 1fr 56px 40px',gap:8,marginBottom:8}}>
@@ -675,7 +670,7 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
             </div>
             
             ${ex.sets.map((set,si)=>html`
-              <div key=${set.id} style=${{display:'grid',gridTemplateColumns:'24px 1fr 1fr 56px 40px',gap:8,marginBottom:8,alignItems:'center',opacity:set.done?.6:1,transition:'opacity 0.2s'}}>
+              <div key=${set.id} style=${{display:'grid',gridTemplateColumns:'24px 1fr 1fr 56px 40px',gap:8,marginBottom:8,alignItems:'center',opacity:set.done?.75:1,transition:'opacity 0.2s'}}>
                 <span style=${{fontSize:12,color:C.txt3,fontWeight:700,textAlign:'center'}}>${si+1}</span>
                 <input type="number" inputMode="decimal" placeholder="—" value=${set.weight}
                   onInput=${e=>updSet(ei,si,'weight',e.target.value)}
@@ -696,7 +691,7 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
                   width:40,height:40,borderRadius:r.md,border:'none',cursor:'pointer',
                   background:set.done?C.greenBg:C.bg3,color:set.done?C.green:C.txt3,
                   fontSize:16,display:'flex',alignItems:'center',justifyContent:'center',
-                  boxShadow:set.done?'0 4px 12px rgba(16,185,129,0.15)':'none',
+                  boxShadow:set.done?'0 4px 12px rgba(16,185,129,0.08)':'none',
                   transition:'all 0.2s'
                 }}>
                   <${Icons.check} size=${16} strokeWidth=${3} />
@@ -704,13 +699,13 @@ function ActiveWorkout({workout,onChange,onFinish,onDiscard,onPickEx}){
               </div>`)}
             
             <div style=${{display:'flex',gap:8,marginTop:12}}>
-              <button onClick=${()=>addSet(ei)} class="btn-action" style=${{background:C.bg3,border:`1px solid rgba(255,255,255,0.05)`,borderRadius:r.md,padding:'8px 14px',fontSize:12,fontWeight:600,color:C.txt1,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.plus} size=${12}/> Set</button>
+              <button onClick=${()=>addSet(ei)} class="btn-action" style=${{background:'#f1f5f9',border:`1px solid #e2e8f0`,borderRadius:r.md,padding:'8px 14px',fontSize:12,fontWeight:600,color:C.txt1,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}><${Icons.plus} size=${12}/> Set</button>
               ${ex.sets.length>1&&html`<button onClick=${()=>delSet(ei)} class="btn-action" style=${{background:C.redBg,border:'none',borderRadius:r.md,padding:'8px 14px',fontSize:12,fontWeight:600,color:C.red,cursor:'pointer'}}>− Set</button>`}
             </div>
             
             <input type="text" placeholder="Ghi chú bài tập..." value=${ex.notes}
               onInput=${e=>updEx(ei,{...ex,notes:e.target.value})}
-              style=${{marginTop:12,width:'100%',padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:12,color:C.txt2,background:C.bg2}}
+              style=${{marginTop:12,width:'100%',padding:'10px 12px',borderRadius:r.md,border:`1px solid #e2e8f0`,fontSize:12,color:C.txt2,background:'#f8fafc'}}
             />
           </div>`)}
         
@@ -745,46 +740,46 @@ function CreateProg({exList,onSave,onClose}){
 
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
-        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,background:'#ffffff',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
           <${Icons.close} size=${20}/>
         </button>
-        <h2 style=${{margin:0,fontSize:18,fontWeight:800,flex:1,letterSpacing:'-0.01em'}}>Tạo chương trình</h2>
+        <h2 style=${{margin:0,fontSize:18,fontWeight:800,color:'#0f172a',flex:1,letterSpacing:'-0.01em'}}>Tạo chương trình</h2>
         <${Btn} onClick=${save}>Lưu</${Btn}>
       </div>
       <div style=${{flex:1,overflowY:'auto',padding:'16px',WebkitOverflowScrolling:'touch'}}>
         <input type="text" placeholder="Tên chương trình (VD: Push Pull Legs)"
           value=${name} onInput=${e=>setName(e.target.value)}
-          style=${{width:'100%',padding:'14px 16px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:15,marginBottom:20,background:C.bg2,color:C.txt1,display:'block',transition:'border-color 0.2s'}}
+          style=${{width:'100%',padding:'14px 16px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:15,marginBottom:20,background:'#ffffff',color:C.txt1,display:'block',transition:'border-color 0.2s'}}
           onFocus=${e=>e.target.style.borderColor=ACC}
           onBlur=${e=>e.target.style.borderColor=C.bdr}
         />
         ${days.map((day,di)=>html`
-          <div key=${day.id} style=${{background:C.bg2,borderRadius:r.lg,padding:16,marginBottom:16,border:`1px solid ${C.bdr}`}}>
+          <div key=${day.id} style=${{background:'#ffffff',borderRadius:r.lg,padding:16,marginBottom:16,border:`1px solid ${C.bdr}`}}>
             <div style=${{display:'flex',gap:10,alignItems:'center',marginBottom:14}}>
               <input type="text" placeholder="Tên ngày (Push, Chân, Full Body...)"
                 value=${day.name} onInput=${e=>setDN(di,e.target.value)}
                 style=${{flex:1,padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,background:C.bg1,color:C.txt1}}
               />
-              ${days.length>1&&html`<button onClick=${()=>delDay(di)} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.close} size=${16}/></button>`}
+              ${days.length>1&&html`<button onClick=${()=>delDay(di)} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:'50%',width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center',color:C.txt3,cursor:'pointer'}}><${Icons.close} size=${16}/></button>`}
             </div>
             ${day.exs.map((pe,ei)=>html`
-              <div key=${ei} style=${{display:'flex',alignItems:'center',gap:8,background:C.bg3,borderRadius:r.md,padding:'10px 12px',marginBottom:8,border:`1px solid rgba(255,255,255,0.03)`}}>
+              <div key=${ei} style=${{display:'flex',alignItems:'center',gap:8,background:C.bg3,borderRadius:r.md,padding:'10px 12px',marginBottom:8,border:`1px solid rgba(0,0,0,0.03)`}}>
                 <span style=${{flex:1,fontSize:13,fontWeight:600,color:C.txt1}}>${pe.name}</span>
                 <input type="number" min="1" max="20" value=${pe.sets}
                   onInput=${e=>setSetsN(di,ei,e.target.value)}
-                  style=${{width:42,padding:'6px 4px',borderRadius:r.sm,border:`1px solid ${C.bdr}`,fontSize:12,textAlign:'center',color:C.txt1,background:C.bg2}}
+                  style=${{width:42,padding:'6px 4px',borderRadius:r.sm,border:`1px solid ${C.bdr}`,fontSize:12,textAlign:'center',color:C.txt1,background:'#ffffff'}}
                 />
                 <span style=${{fontSize:11,color:C.txt3,fontWeight:600}}>sets</span>
                 <button onClick=${()=>delExFromDay(di,ei)} class="btn-action" style=${{background:'none',border:'none',color:C.txt3,cursor:'pointer',padding:4}}><${Icons.close} size=${16}/></button>
               </div>`)}
             ${pf===di?html`
-              <div class="fade-in" style=${{marginTop:12,paddingTop:12,borderTop:`1px solid rgba(255,255,255,0.05)`}}>
+              <div class="fade-in" style=${{marginTop:12,paddingTop:12,borderTop:`1px solid rgba(0,0,0,0.05)`}}>
                 <input type="text" placeholder="Tìm bài tập..." value=${search}
                   onInput=${e=>setSearch(e.target.value)}
                   style=${{width:'100%',padding:'10px 12px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,marginBottom:8,background:C.bg1,color:C.txt1,boxSizing:'border-box'}}
                 />
-                <div style=${{maxHeight:180,overflowY:'auto',background:C.bg1,borderRadius:r.md,border:`1px solid ${C.bdr}`}}>
+                <div style=${{maxHeight:180,overflowY:'auto',background:'#ffffff',borderRadius:r.md,border:`1px solid ${C.bdr}`}}>
                   ${filt.map(e=>html`
                     <button key=${e.id} onClick=${()=>addExToDay(di,e)} style=${{
                       display:'block',width:'100%',background:'transparent',border:'none',
@@ -801,7 +796,7 @@ function CreateProg({exList,onSave,onClose}){
                 display:'flex',alignItems:'center',justifyContent:'center',gap:6
               }}><${Icons.plus} size=${14} /> Thêm bài tập</button>`}
           </div>`)}
-        <button onClick=${addDay} class="btn-action" style=${{width:'100%',background:C.bg2,border:`1px solid ${C.bdr2}`,borderRadius:r.md,padding:'14px',fontSize:13,fontWeight:600,color:C.txt1,cursor:'pointer',marginBottom:40,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}><${Icons.plus} size=${16}/> Thêm ngày</button>
+        <button onClick=${addDay} class="btn-action" style=${{width:'100%',background:'#ffffff',border:`1px solid ${C.bdr2}`,borderRadius:r.md,padding:'14px',fontSize:13,fontWeight:600,color:C.txt1,cursor:'pointer',marginBottom:40,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}><${Icons.plus} size=${16}/> Thêm ngày</button>
       </div>
     </${Wrap}>`;
 }
@@ -820,16 +815,16 @@ function PickEx({exList,onPick,onClose,onAddEx}){
   };
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px 12px',borderBottom:`1px solid ${C.bdr}`,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',flexShrink:0}}>
+      <div style=${{padding:'14px 16px 12px',borderBottom:`1px solid ${C.bdr}`,background:'#ffffff',flexShrink:0}}>
         <div style=${{display:'flex',gap:12,alignItems:'center',marginBottom:12}}>
-          <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+          <button onClick=${onClose} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
             <${Icons.close} size=${20}/>
           </button>
-          <h3 style=${{margin:0,fontSize:18,fontWeight:800,letterSpacing:'-0.01em'}}>Chọn bài tập</h3>
+          <h3 style=${{margin:0,fontSize:18,fontWeight:800,color:'#0f172a',letterSpacing:'-0.01em'}}>Chọn bài tập</h3>
         </div>
         <input type="text" placeholder="Tìm bài tập..." value=${s}
           onInput=${e=>setS(e.target.value)}
-          style=${{width:'100%',padding:'11px 14px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:13,background:C.bg2,color:C.txt1,boxSizing:'border-box'}}
+          style=${{width:'100%',padding:'11px 14px',borderRadius:r.lg,border:`1px solid ${C.bdr}`,fontSize:13,background:'#ffffff',color:C.txt1,boxSizing:'border-box'}}
         />
       </div>
       <div style=${{flex:1,overflowY:'auto',padding:'8px 16px',WebkitOverflowScrolling:'touch'}}>
@@ -838,7 +833,7 @@ function PickEx({exList,onPick,onClose,onAddEx}){
             <${Label} t=${g} mt=${12}/>
             ${filt.filter(e=>e.g===g).map(e=>html`
               <button key=${e.id} onClick=${()=>onPick(e)} class="btn-action card-hover" style=${{
-                display:'block',width:'100%',background:C.bg2,border:`1px solid ${C.bdr}`,
+                display:'block',width:'100%',background:'#ffffff',border:`1px solid ${C.bdr}`,
                 borderRadius:r.md,padding:'14px 16px',textAlign:'left',fontSize:13,fontWeight:600,
                 cursor:'pointer',marginBottom:8,color:C.txt1,
               }}>${e.name}</button>`)}
@@ -846,8 +841,8 @@ function PickEx({exList,onPick,onClose,onAddEx}){
         ${!showA
           ?html`<button onClick=${()=>setShowA(true)} class="btn-action" style=${{marginTop:20,marginBottom:40,width:'100%',background:'transparent',border:`1.5px dashed ${C.bdr2}`,borderRadius:r.md,padding:'14px',color:ACC,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6}}><${Icons.plus} size=${16}/> Tạo bài tập mới</button>`
           :html`
-            <div class="fade-in" style=${{marginTop:20,marginBottom:40,background:C.bg2,borderRadius:r.lg,padding:16,border:`1px solid ${C.bdr}`}}>
-              <p style=${{margin:'0 0 12px',fontSize:13,fontWeight:700}}>Bài tập mới</p>
+            <div class="fade-in" style=${{marginTop:20,marginBottom:40,background:'#ffffff',borderRadius:r.lg,padding:16,border:`1px solid ${C.bdr}`}}>
+              <p style=${{margin:'0 0 12px',fontSize:13,fontWeight:700,color:'#0f172a'}}>Bài tập mới</p>
               <input type="text" placeholder="Tên bài tập..." value=${nn}
                 onInput=${e=>setNn(e.target.value)}
                 style=${{width:'100%',padding:'11px 14px',borderRadius:r.md,border:`1px solid ${C.bdr}`,fontSize:13,marginBottom:12,background:C.bg1,color:C.txt1,boxSizing:'border-box'}}
@@ -866,12 +861,12 @@ function SessDetail({session,onClose}){
   const totalSets=session.exs?.reduce((t,e)=>t+e.sets.filter(s=>s.done).length,0)||0;
   return html`
     <${Wrap} cx=${{position:'absolute',top:0,left:0,width:'100%',height:'100%',zIndex:100,background:C.bg1}}>
-      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,flexShrink:0,background:'rgba(21, 31, 50, 0.8)',backdropFilter:'blur(10px)',display:'flex',gap:12,alignItems:'center'}}>
-        <button onClick=${onClose} class="btn-action" style=${{background:'rgba(255,255,255,0.06)',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
+      <div style=${{padding:'14px 16px',borderBottom:`1px solid ${C.bdr}`,flexShrink:0,background:'#ffffff',display:'flex',gap:12,alignItems:'center'}}>
+        <button onClick=${onClose} class="btn-action" style=${{background:'#f1f5f9',border:'none',borderRadius:'50%',width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:C.txt2}}>
           <${Icons.close} size=${20}/>
         </button>
         <div style=${{flex:1}}>
-          <h2 style=${{margin:0,fontSize:18,fontWeight:800,letterSpacing:'-0.01em'}}>${session.dayName}</h2>
+          <h2 style=${{margin:0,fontSize:18,fontWeight:800,color:'#0f172a',letterSpacing:'-0.01em'}}>${session.dayName}</h2>
           <p style=${{margin:0,color:C.txt3,fontSize:12}}>${session.progName} · ${fD(session.date)}</p>
         </div>
       </div>
@@ -883,7 +878,7 @@ function SessDetail({session,onClose}){
             {l:'Số bài tập',v:`${session.exs?.length||0} bài`,i:Icons.progs},
             {l:'Tổng set',v:`${totalSets} sets`,i:Icons.check},
           ].map(({l,v,i})=>html`
-            <div key=${l} style=${{background:C.bg2,borderRadius:r.md,padding:'14px 16px',border:`1px solid ${C.bdr}`,display:'flex',alignItems:'center',gap:12}}>
+            <div key=${l} style=${{background:'#ffffff',borderRadius:r.md,padding:'14px 16px',border:`1px solid ${C.bdr}`,display:'flex',alignItems:'center',gap:12}}>
               <div style=${{color:ACC}}><${i} size=${20}/></div>
               <div>
                 <p style=${{margin:'0 0 2px',fontSize:10,color:C.txt3,fontWeight:600,textTransform:'uppercase'}}>${l}</p>
@@ -892,19 +887,19 @@ function SessDetail({session,onClose}){
             </div>`)}
         </div>
         ${session.exs?.map((ex,i)=>html`
-          <div key=${i} style=${{background:C.bg2,borderRadius:r.lg,padding:16,marginBottom:14,border:`1px solid ${C.bdr}`}}>
+          <div key=${i} style=${{background:'#ffffff',borderRadius:r.lg,padding:16,marginBottom:14,border:`1px solid ${C.bdr}`}}>
             <p style=${{margin:'0 0 12px',fontSize:14,fontWeight:800,color:ACC,letterSpacing:'-0.01em'}}>${ex.name}</p>
             <div style=${{display:'flex',flexDirection:'column',gap:8}}>
               ${ex.sets.filter(s=>s.done).map((set,j)=>html`
-                <div key=${j} style=${{display:'flex',gap:14,padding:'10px 14px',background:C.bg3,borderRadius:r.md,fontSize:13,alignItems:'center',color:C.txt1,border:`1px solid rgba(255,255,255,0.03)`}}>
+                <div key=${j} style=${{display:'flex',gap:14,padding:'10px 14px',background:C.bg3,borderRadius:r.md,fontSize:13,alignItems:'center',color:C.txt1,border:`1px solid rgba(0,0,0,0.02)`}}>
                   <span style=${{color:C.txt3,fontSize:11,fontWeight:700,width:16}}>${j+1}</span>
                   <span style=${{flex:1}}><strong>${set.weight||'—'}</strong> kg</span>
                   <span style=${{flex:1}}><strong>${set.reps||'—'}</strong> reps</span>
-                  ${set.rpe&&html`<span style=${{background:'rgba(255,255,255,0.06)',padding:'2px 6px',borderRadius:4,color:C.txt2,fontSize:11,fontWeight:600}}>RPE ${set.rpe}</span>`}
+                  ${set.rpe&&html`<span style=${{background:'rgba(0,0,0,0.04)',padding:'2px 6px',borderRadius:4,color:C.txt2,fontSize:11,fontWeight:600}}>RPE ${set.rpe}</span>`}
                 </div>`)}
             </div>
             ${ex.notes&&html`
-              <div style=${{marginTop:10,paddingTop:10,borderTop:`1px solid rgba(255,255,255,0.04)`,fontSize:12,color:C.txt2,fontStyle:'italic',display:'flex',gap:6}}>
+              <div style=${{marginTop:10,paddingTop:10,borderTop:`1px solid rgba(0,0,0,0.03)`,fontSize:12,color:C.txt2,fontStyle:'italic',display:'flex',gap:6}}>
                 <span>📝</span>
                 <span>${ex.notes}</span>
               </div>
@@ -915,13 +910,12 @@ function SessDetail({session,onClose}){
 }
 
 function CelebrationModal({onClose, workout, profile}) {
-  // Generate random confetti pieces
   const pieces = Array.from({length: 80}, (_, i) => {
-    const left = Math.random() * 100; // %
-    const delay = Math.random() * 2; // s
-    const duration = 2 + Math.random() * 2; // s
-    const size = 6 + Math.random() * 8; // px
-    const colors = ['#3b82f6', '#db2777', '#10b981', '#f97316', '#eab308', '#ec4899'];
+    const left = Math.random() * 100;
+    const delay = Math.random() * 2;
+    const duration = 2 + Math.random() * 2;
+    const size = 6 + Math.random() * 8;
+    const colors = ['#0084ff', '#db2777', '#10b981', '#f97316', '#eab308', '#ec4899'];
     const color = colors[Math.floor(Math.random() * colors.length)];
     return html`
       <div key=${i} class="confetti-piece" style=${{
@@ -939,7 +933,7 @@ function CelebrationModal({onClose, workout, profile}) {
   return html`
     <div class="fade-in" style=${{
       position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-      background: 'rgba(9, 13, 22, 0.96)', zIndex: 10000,
+      background: 'rgba(255, 255, 255, 0.98)', zIndex: 10000,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: 30
     }}>
@@ -947,21 +941,21 @@ function CelebrationModal({onClose, workout, profile}) {
       
       <div class="scale-in" style=${{textAlign: 'center', maxWidth: 360}}>
         <div style=${{fontSize: 64, marginBottom: 20, animation: 'checkmarkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'}}>🏆</div>
-        <h2 style=${{fontSize: 28, fontWeight: 800, margin: '0 0 10px', color: '#fff', letterSpacing:'-0.02em'}}>Tuyệt Vời!</h2>
+        <h2 style=${{fontSize: 28, fontWeight: 800, margin: '0 0 10px', color: '#0f172a', letterSpacing:'-0.02em'}}>Tuyệt Vời!</h2>
         <p style=${{fontSize: 16, color: C.txt2, margin: '0 0 32px'}}>Chúc mừng ${profile.name} đã hoàn thành buổi tập 🔥</p>
         
-        <div style=${{background: C.bg2, borderRadius: r.lg, padding: 20, marginBottom: 32, border: `1px solid ${C.bdr}`, boxShadow: '0 10px 30px rgba(0,0,0,0.5)'}}>
+        <div style=${{background: '#ffffff', borderRadius: r.lg, padding: 20, marginBottom: 32, border: `1px solid ${C.bdr}`, boxShadow: '0 10px 30px rgba(0,0,0,0.05)'}}>
           <p style=${{margin: 0, fontSize: 11, color: C.txt3, textTransform: 'uppercase', fontWeight: 700, letterSpacing:'0.05em'}}>Buổi tập</p>
           <p style=${{margin: '2px 0 16px', fontSize: 18, fontWeight: 800, color: ACC, letterSpacing:'-0.01em'}}>${workout.dayName}</p>
           
           <div style=${{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16}}>
             <div>
               <p style=${{margin: 0, fontSize: 11, color: C.txt3}}>TỔNG VOLUME</p>
-              <p style=${{margin: 0, fontSize: 20, fontWeight: 800}}>${Math.round(tVol(workout.exs))} kg</p>
+              <p style=${{margin: 0, fontSize: 20, fontWeight: 800, color:'#0f172a'}}>${Math.round(tVol(workout.exs))} kg</p>
             </div>
             <div>
               <p style=${{margin: 0, fontSize: 11, color: C.txt3}}>THỜI GIAN</p>
-              <p style=${{margin: 0, fontSize: 20, fontWeight: 800}}>${durS(Date.now() - workout.startTime)}</p>
+              <p style=${{margin: 0, fontSize: 20, fontWeight: 800, color:'#0f172a'}}>${durS(Date.now() - workout.startTime)}</p>
             </div>
           </div>
         </div>
@@ -999,7 +993,7 @@ function GymPair(){
     const prof = PR.find(p => p.id === pid);
     if (prof) {
       document.documentElement.style.setProperty('--accent', prof.c);
-      document.documentElement.style.setProperty('--accent-glow', prof.c + '26'); // 15% opacity
+      document.documentElement.style.setProperty('--accent-glow', prof.c + '1A'); // 10% opacity
     }
     (async()=>{
       const[c,p,s,a]=await Promise.all([db.get(`c:${pid}`),db.get(`p:${pid}`),db.get(`s:${pid}`),db.get(`a:${pid}`)]);
@@ -1057,7 +1051,7 @@ function GymPair(){
     return html`<${ActiveWorkout} workout=${active} onChange=${saveA} onFinish=${finishWorkout} onDiscard=${discardWorkout} onPickEx=${goPickEx}/>`;
   }
   if(pg==='create-prog')return html`<${CreateProg} exList=${exList} onSave=${p=>{saveP([...progs,p]);setPg(null);}} onClose=${()=>setPg(null)}/>`;
-  if(pg==='sess-detail')return html`<${SessDetail} session=${pgCtx} onClose=${()=>{setPg.null;setPg(null);setPgCtx(null);}}/>`;
+  if(pg==='sess-detail')return html`<${SessDetail} session=${pgCtx} onClose=${()=>{setPg(null);setPgCtx(null);}}/>`;
 
   return html`
     <${Wrap}>

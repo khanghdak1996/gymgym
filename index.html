@@ -793,31 +793,27 @@
       const [restTime, setRestTime] = useState(90);
 
       useEffect(() => {
-        const iv = setInterval(() => setElapsed(e => e + 1), 1000);
-        return () => clearInterval(iv);
-      }, []);
-
-      useEffect(() => {
-        if (!rest || rest.secs <= 0) return;
-        const iv = setInterval(() => {
+        const tick = () => {
+          setElapsed(Math.floor((Date.now() - workout.startTime) / 1000));
           setRest(r => {
             if (!r) return null;
-            if (r.secs <= 1) {
-              beep();
-              return { ...r, secs: 0 };
-            }
-            return { ...r, secs: r.secs - 1 };
+            const secsLeft = Math.max(0, Math.round((r.endTime - Date.now()) / 1000));
+            if (secsLeft === 0 && !r.beeped) { beep(); return { ...r, secs: 0, beeped: true }; }
+            return { ...r, secs: secsLeft };
           });
-        }, 1000);
-        return () => clearInterval(iv);
-      }, [rest && rest.secs]);
+        };
+        const iv = setInterval(tick, 1000);
+        document.addEventListener('visibilitychange', tick);
+        tick();
+        return () => { clearInterval(iv); document.removeEventListener('visibilitychange', tick); };
+      }, []);
 
       const updEx = async (i, ex) => onChange({ ...workout, exs: workout.exs.map((e, j) => j === i ? ex : e) });
       const toggleSet = async (ei, si) => {
         const ex = workout.exs[ei];
         const done = !ex.sets[si].done;
         const sets = ex.sets.map((s, j) => j === si ? { ...s, done } : s);
-        if (done) setRest({ secs: restTime, max: restTime });
+        if (done) setRest({ endTime: Date.now() + restTime * 1000, secs: restTime, max: restTime, beeped: false });
         await updEx(ei, { ...ex, sets });
       };
       const updSet = async (ei, si, f, v) => {
@@ -840,7 +836,12 @@
       const addEx = () => onPickEx(async e => {
         await onChange({ ...workout, exs: [...workout.exs, { id: uid(), exId: e.id, name: e.name, sets: [{ id: uid(), weight: '', reps: '', rpe: '', done: false }], notes: '' }] });
       });
-      const addRestSecs = n => setRest(r => r ? { ...r, secs: Math.max(0, r.secs + n), max: Math.max(r.max, r.secs + n) } : null);
+      const addRestSecs = n => setRest(r => {
+        if (!r) return null;
+        const endTime = r.endTime + n * 1000;
+        const secsLeft = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+        return { ...r, endTime, secs: secsLeft, max: Math.max(r.max, secsLeft), beeped: secsLeft > 0 ? false : r.beeped };
+      });
       const vol = tVol(workout.exs);
 
       return html`
@@ -930,17 +931,17 @@
                 <input type="number" inputMode="decimal" placeholder="—" value=${set.weight}
                   onInput=${e => updSet(ei, si, 'weight', e.target.value)}
                   class=${`workout-input ${set.done ? 'workout-input-done' : ''}`}
-                  style=${{ padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
+                  style=${{ width: '100%', minWidth: 0, boxSizing: 'border-box', padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
                 />
                 <input type="number" inputMode="numeric" placeholder="—" value=${set.reps}
                   onInput=${e => updSet(ei, si, 'reps', e.target.value)}
                   class=${`workout-input ${set.done ? 'workout-input-done' : ''}`}
-                  style=${{ padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
+                  style=${{ width: '100%', minWidth: 0, boxSizing: 'border-box', padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
                 />
                 <input type="number" inputMode="numeric" placeholder="—" min="1" max="10" value=${set.rpe}
                   onInput=${e => updSet(ei, si, 'rpe', e.target.value)}
                   class=${`workout-input ${set.done ? 'workout-input-done' : ''}`}
-                  style=${{ padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
+                  style=${{ width: '100%', minWidth: 0, boxSizing: 'border-box', padding: '10px 4px', borderRadius: r.md, fontSize: 14, textAlign: 'center' }}
                 />
                 <button onClick=${() => toggleSet(ei, si)} class=${`btn-action ${set.done ? 'checkmark-pop' : ''}`} style=${{
               width: 40, height: 40, borderRadius: r.md, border: 'none', cursor: 'pointer',
@@ -1639,26 +1640,21 @@
       const [showCelebration, setShowCelebration] = useState(false);
       const [finishedWorkout, setFinishedWorkout] = useState(null);
       const [newPRs, setNewPRs] = useState([]);
-      const [allSessions, setAllSessions] = useState([]);
+      const [cloudSessions, setCloudSessions] = useState([]);
       const [prs, setPrs] = useState({});
       const [weights, setWeights] = useState([]);
 
-      const loadAllSessions = async () => {
-        const lists = await Promise.all(PR.map(p => db.get(`s:${p.id}`)));
-        const merged = PR.flatMap((p, i) => (lists[i] || []).map(s => ({ ...s, profileId: p.id })))
-          .sort((a, b) => (b.loggedAt || b.startTime || 0) - (a.loggedAt || a.startTime || 0));
-        setAllSessions(merged);
-      };
-
-      useEffect(() => { loadAllSessions(); }, []);
       useEffect(() => {
-        const unsub = cloud.listenSessions(list => {
-          if (!list.length) return;
-          const sorted = [...list].sort((a, b) => (b.loggedAt || b.startTime || 0) - (a.loggedAt || a.startTime || 0));
-          setAllSessions(sorted);
-        });
+        const unsub = cloud.listenSessions(list => setCloudSessions(list));
         return unsub;
       }, []);
+
+      const allSessions = (() => {
+        const byId = new Map();
+        cloudSessions.forEach(s => byId.set(s.id, s));
+        sessions.forEach(s => { if (!byId.has(s.id)) byId.set(s.id, { ...s, profileId: pid }); });
+        return [...byId.values()].sort((a, b) => (b.loggedAt || b.startTime || 0) - (a.loggedAt || a.startTime || 0));
+      })();
 
       useEffect(() => {
         if (!pid) {

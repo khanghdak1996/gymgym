@@ -249,7 +249,7 @@
     import { useState, useEffect } from 'https://esm.sh/preact@10/hooks';
     import htm from 'https://esm.sh/htm@3';
     import { initializeApp } from 'https://esm.sh/firebase@10/app';
-    import { getFirestore, doc, setDoc, collection, query, onSnapshot } from 'https://esm.sh/firebase@10/firestore';
+    import { getFirestore, doc, setDoc, deleteDoc, collection, query, onSnapshot } from 'https://esm.sh/firebase@10/firestore';
     import { getAuth, signInAnonymously } from 'https://esm.sh/firebase@10/auth';
     import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://esm.sh/firebase@10/storage';
     const html = htm.bind(h);
@@ -262,16 +262,23 @@
       messagingSenderId: "637574818118",
       appId: "1:637574818118:web:359a47d2ce5c820d92dd47"
     };
-    let fbAuth = null, fbDb = null, fbStorage = null, fbReady = Promise.resolve(false);
+    let fbAuth = null, fbDb = null, fbStorage = null, fbReady = Promise.resolve(false), fbInitError = null;
     try {
       const fbApp = initializeApp(firebaseConfig);
       fbAuth = getAuth(fbApp);
       fbDb = getFirestore(fbApp);
       fbStorage = getStorage(fbApp);
-      fbReady = signInAnonymously(fbAuth).then(() => true).catch(e => { console.warn('Firebase auth failed', e); return false; });
+      fbReady = signInAnonymously(fbAuth).then(() => true).catch(e => { fbInitError = `Đăng nhập Firebase thất bại: ${e?.code || e?.message || e}`; reportCloudError('Đăng nhập Firebase thất bại', e); return false; });
     } catch (e) {
+      fbInitError = `Khởi tạo Firebase thất bại: ${e?.code || e?.message || e}`;
       console.warn('Firebase init failed, app will run local-only', e);
     }
+
+    let cloudErrorHandler = null;
+    const reportCloudError = (ctx, e) => {
+      console.warn(ctx, e);
+      if (cloudErrorHandler) cloudErrorHandler(`${ctx}: ${e?.code || e?.message || e}`);
+    };
 
     const compressImage = (file, maxDim = 1280, quality = 0.75) => new Promise((resolve, reject) => {
       const img = new Image();
@@ -291,21 +298,28 @@
 
     const cloud = {
       async pushSession(session) {
-        if (!fbDb) return;
+        if (!fbDb) return reportCloudError('Đồng bộ buổi tập thất bại', new Error(fbInitError || 'Firestore chưa khởi tạo được'));
         try {
           await fbReady;
           await setDoc(doc(fbDb, 'sessions', `${session.profileId}_${session.id}`), session);
-        } catch (e) { console.warn('cloud pushSession failed', e); }
+        } catch (e) { reportCloudError('Đồng bộ buổi tập thất bại', e); }
       },
-      async pushWeight(profileId, entry) {
+      async deleteSession(profileId, sessionId) {
         if (!fbDb) return;
         try {
           await fbReady;
+          await deleteDoc(doc(fbDb, 'sessions', `${profileId}_${sessionId}`));
+        } catch (e) { reportCloudError('Xoá buổi tập trên cloud thất bại', e); }
+      },
+      async pushWeight(profileId, entry) {
+        if (!fbDb) return reportCloudError('Đồng bộ cân nặng thất bại', new Error(fbInitError || 'Firestore chưa khởi tạo được'));
+        try {
+          await fbReady;
           await setDoc(doc(fbDb, 'weights', `${profileId}_${entry.at}`), { ...entry, profileId });
-        } catch (e) { console.warn('cloud pushWeight failed', e); }
+        } catch (e) { reportCloudError('Đồng bộ cân nặng thất bại', e); }
       },
       async uploadPhoto(blob, sessionId) {
-        if (!fbStorage) throw new Error('Firebase Storage not available');
+        if (!fbStorage) throw new Error(fbInitError || 'Firebase Storage chưa khởi tạo được');
         await fbReady;
         const sref = storageRef(fbStorage, `journal/${sessionId}.jpg`);
         await uploadBytes(sref, blob, { contentType: 'image/jpeg' });
@@ -313,11 +327,11 @@
       },
       listenSessions(cb) {
         if (!fbDb) return () => { };
-        return onSnapshot(query(collection(fbDb, 'sessions')), snap => cb(snap.docs.map(d => d.data())), e => console.warn('listenSessions failed', e));
+        return onSnapshot(query(collection(fbDb, 'sessions')), snap => cb(snap.docs.map(d => d.data())), e => reportCloudError('Không tải được Nhật ký từ cloud', e));
       },
       listenWeights(profileId, cb) {
         if (!fbDb) return () => { };
-        return onSnapshot(query(collection(fbDb, 'weights')), snap => cb(snap.docs.map(d => d.data()).filter(w => w.profileId === profileId)), e => console.warn('listenWeights failed', e));
+        return onSnapshot(query(collection(fbDb, 'weights')), snap => cb(snap.docs.map(d => d.data()).filter(w => w.profileId === profileId)), e => reportCloudError('Không tải được cân nặng từ cloud', e));
       }
     };
 
@@ -763,9 +777,14 @@
     </div>`;
     }
 
-    function HistTab({ sessions, onView }) {
+    function HistTab({ sessions, onView, onClearHistory }) {
       return html`
     <div class="fade-in">
+      ${sessions.length > 0 && html`
+        <div style=${{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+          <button onClick=${() => { if (window.confirm(`Xoá toàn bộ ${sessions.length} buổi tập trong lịch sử? Không thể hoàn tác.`)) onClearHistory(); }} class="btn-action" style=${{ display: 'flex', alignItems: 'center', gap: 5, background: C.redBg, border: 'none', borderRadius: r.md, padding: '6px 12px', color: C.red, fontSize: 12, fontWeight: 500, cursor: 'pointer' }}><${Icons.trash} size=${13}/> Xoá lịch sử</button>
+        </div>
+      `}
       ${sessions.length === 0
           ? html`<${Empty} icon="📊" msg="Chưa có buổi tập nào" sub="Hoàn thành một buổi để thấy ở đây"/>`
           : sessions.map(s => html`
@@ -1007,7 +1026,7 @@
           try {
             const blob = await compressImage(photoFile);
             photoUrl = await cloud.uploadPhoto(blob, workout.id);
-          } catch (e) { console.warn('Upload ảnh thất bại', e); }
+          } catch (e) { reportCloudError('Upload ảnh thất bại', e); }
           setSaving(false);
         }
         onSave({ title: t, note: note.trim(), photoUrl, date: isNaN(d) ? undefined : d.toISOString().split('T')[0], loggedAt: isNaN(d) ? Date.now() : d.getTime() });
@@ -1530,7 +1549,7 @@
     </div>`;
     }
 
-    function InfoTab({ sub, setSub, sessions, profile, weights, onAddWeight, allSessions, onView }) {
+    function InfoTab({ sub, setSub, sessions, profile, weights, onAddWeight, allSessions, onView, onClearHistory }) {
       const subs = [{ id: 'progress', l: 'Tiến bộ', i: Icons.trend }, { id: 'journal', l: 'Nhật ký', i: Icons.journal }, { id: 'hist', l: 'Lịch sử', i: Icons.hist }];
       return html`
     <div class="fade-in" style=${{ padding: '22px 16px' }}>
@@ -1549,7 +1568,7 @@
       </div>
       ${sub === 'progress' && html`<${ProgressTab} sessions=${sessions} profile=${profile} weights=${weights} onAddWeight=${onAddWeight}/>`}
       ${sub === 'journal' && html`<${JournalTab} entries=${allSessions} onView=${onView}/>`}
-      ${sub === 'hist' && html`<${HistTab} sessions=${sessions} onView=${onView}/>`}
+      ${sub === 'hist' && html`<${HistTab} sessions=${sessions} onView=${onView} onClearHistory=${onClearHistory}/>`}
     </div>`;
     }
 
@@ -1641,6 +1660,13 @@
       const [finishedWorkout, setFinishedWorkout] = useState(null);
       const [newPRs, setNewPRs] = useState([]);
       const [cloudSessions, setCloudSessions] = useState([]);
+      const [cloudError, setCloudError] = useState(null);
+
+      useEffect(() => {
+        cloudErrorHandler = setCloudError;
+        if (fbInitError) setCloudError(fbInitError);
+        return () => { cloudErrorHandler = null; };
+      }, []);
       const [prs, setPrs] = useState({});
       const [weights, setWeights] = useState([]);
 
@@ -1688,6 +1714,10 @@
         const w = [...weights, entry];
         setWeights(w); db.set(`wt:${pid}`, w);
         cloud.pushWeight(pid, entry);
+      };
+      const clearHistory = () => {
+        sessions.forEach(s => cloud.deleteSession(pid, s.id));
+        saveS([]);
       };
 
       const startWorkout = (prog, di) => {
@@ -1749,10 +1779,16 @@
 
       return html`
     <${Wrap}>
+      ${cloudError && html`
+        <div style=${{ background: '#fef2f2', borderBottom: `1px solid #fecaca`, padding: '10px 16px', display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 12, color: '#991b1b', flexShrink: 0 }}>
+          <span style=${{ flex: 1, lineHeight: 1.4, wordBreak: 'break-word' }}>⚠️ ${cloudError}</span>
+          <button onClick=${() => setCloudError(null)} style=${{ background: 'none', border: 'none', color: '#991b1b', cursor: 'pointer', fontSize: 16, lineHeight: 1, flexShrink: 0 }}>×</button>
+        </div>
+      `}
       <div style=${{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: 20 }}>
         ${tab === 'home' && html`<${HomeTab} profile=${profile} progs=${progs} sessions=${sessions} onStart=${startWorkout} onView=${s => { setPg('sess-detail'); setPgCtx(s); }} onSwitch=${() => setPid(null)}/>`}
         ${tab === 'progs' && html`<${ProgsTab} progs=${progs} onNew=${() => { setPgCtx(null); setPg('create-prog'); }} onEdit=${p => { setPgCtx(p); setPg('create-prog'); }} onDel=${id => saveP(progs.filter(p => p.id !== id))} onStart=${startWorkout}/>`}
-        ${tab === 'info' && html`<${InfoTab} sub=${infoSub} setSub=${setInfoSub} sessions=${sessions} profile=${profile} weights=${weights} onAddWeight=${addWeight} allSessions=${allSessions} onView=${s => { setPg('sess-detail'); setPgCtx(s); }}/>`}
+        ${tab === 'info' && html`<${InfoTab} sub=${infoSub} setSub=${setInfoSub} sessions=${sessions} profile=${profile} weights=${weights} onAddWeight=${addWeight} allSessions=${allSessions} onView=${s => { setPg('sess-detail'); setPgCtx(s); }} onClearHistory=${clearHistory}/>`}
       </div>
       <${TabBar} tab=${tab} onTab=${setTab}/>
     </${Wrap}>`;
